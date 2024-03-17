@@ -9,9 +9,9 @@ private:
 		int height;
 		sf::RenderWindow window;
 		int limitFramrate;
-		bool fullscreen;
-		// Prywatny konstruktor, aby uniemo¿liwiæ tworzenie instancji z zewn¹trz. sprawdzenie czy okno zostalo poprawnie zainicjowane
-		// Po ":" wypisujemy liste inicjalizacyjn¹ zastepujaca np. this->width = w;
+		bool fullScreen;
+		// Prywatny konstruktor, aby uniemoï¿½liwiï¿½ tworzenie instancji z zewnï¿½trz. sprawdzenie czy okno zostalo poprawnie zainicjowane
+		// Po ":" wypisujemy liste inicjalizacyjnï¿½ zastepujaca np. this->width = w;
 		Engine(int w, int h, bool fullscreen) : width(w), height(h), fullscreen(fullscreen), window(sf::VideoMode(w, h), "Engine2D") {
 			if (fullscreen) {
 				window.create(sf::VideoMode(w, h), "Engine2D", sf::Style::Fullscreen);
@@ -23,28 +23,29 @@ private:
 				// Zapisanie komunikatu o bledzie w pliku logfile.txt
 				std::ofstream logfile("logfile.txt");
 				if (logfile.is_open() ){
-					logfile << "B³¹d inicjalizacji okna." << std::endl;
+					logfile << "Bï¿½ï¿½d inicjalizacji okna." << std::endl;
 				}
 				else {
 					std::cerr << "Blad otwarcia pliku do zapisu." << std::endl;
 				}
 				logfile.close();
 
-				std::cerr << "B³¹d inicjalizacji okna. Zobacz plik logfile.txt dla wiêcej informacji." << std::endl;
-				// Zakoñcz pracê silnika
+				std::cerr << "Bï¿½ï¿½d inicjalizacji okna. Zobacz plik logfile.txt dla wiï¿½cej informacji." << std::endl;
+				// Zakoï¿½cz pracï¿½ silnika
 				exit(1);
 			}
+			
 
 		};
 
 public:
-	// Metoda zwracaj¹ca instancjê singletona, zmienna static Engine inicjalizowana jest tylko raz i istnieje do koñca pracy programu
+	// Metoda zwracajï¿½ca instancjï¿½ singletona, zmienna static Engine inicjalizowana jest tylko raz i istnieje do koï¿½ca pracy programu
 	static Engine& getInstance(int w, int h, bool fullscreen) {
 		static Engine instance(w, h, fullscreen);
 		return instance;
 	}
 
-	// Metoda pozwalaj¹ca ustawiæ pe³ny ekran
+	// Metoda pozwalajï¿½ca ustawiï¿½ peï¿½ny ekran
 	void setFullscreen(bool fullscreen) {
 		this->fullscreen = fullscreen;
 		if (fullscreen) {
@@ -55,7 +56,7 @@ public:
 		}
 	}
 
-	// Metoda ustawia wielkoœæ okna
+	// Metoda ustawia wielkoï¿½ï¿½ okna
 	void setWindowSize(int w, int h) {
 		width = w;
 		height = h;
@@ -67,12 +68,20 @@ public:
 		target.clear(color);
 	}
 
-	Engine(const Engine&) = delete; // Wy³¹czenie konstruktora kopiuj¹cego
-	Engine& operator = (const Engine&) = delete; // Wy³¹czenie operatora przypisania
+	Engine(const Engine&) = delete; // Wyï¿½ï¿½czenie konstruktora kopiujï¿½cego
+	Engine& operator = (const Engine&) = delete; // Wyï¿½ï¿½czenie operatora przypisania
 
 	//Metoda ustawiajaca limit klatek na sekunde
 	void setLimit(int limit) {
 		this->limitFramrate = limit;
+	}
+
+	//Metoda ustawiajï¿½ca pozwalajï¿½ca ustawiï¿½ peï¿½ny ekran.sf::VideoMode::getFullscreenModes() zwraca listï¿½ obsï¿½ugiwanych przez system trybï¿½w peï¿½noekranowych.[0] oznacza wybï¿½r pierwszego z listy
+	void setFullScreen(bool full) {
+		this->fullScreen = full;
+		if (fullScreen) {
+			window.create(sf::VideoMode::getFullscreenModes()[0], "Engine2D Full Screen", sf::Style::Fullscreen);
+		}
 	}
 
 	void run() {
@@ -82,7 +91,7 @@ public:
 		sf::Clock clock;
 
 		while (window.isOpen()) {
-			//Pobiera czas, który up³yn¹³ od ostatniego wywo³ania clock.restart()
+			//Pobiera czas, ktï¿½ry upï¿½ynï¿½ï¿½ od ostatniego wywoï¿½ania clock.restart()
 			sf::Time deltaTime = clock.restart();
 			sf::Event event;
 
@@ -91,7 +100,7 @@ public:
 				if (event.type == sf::Event::Closed)
 					window.close();
 
-				// Ustawienie ekranu na rozdzielczosc 800x600 skrótem ALT+R
+				// Ustawienie ekranu na rozdzielczosc 800x600 skrï¿½tem ALT+R
 				if (event.type == sf::Event::KeyPressed) {
 					if ((event.key.code == sf::Keyboard::R) && (event.key.alt)) {
 						if (fullscreen) {
@@ -104,7 +113,7 @@ public:
 					}
 				}
 
-				// Ustawienie pe³nego ekranu skrótem ALT+F (F-fullscreen)
+				// Ustawienie peï¿½nego ekranu skrï¿½tem ALT+F (F-fullscreen)
 				if (event.type == sf::Event::KeyPressed) {
 					if ((event.key.code == sf::Keyboard::F) && (event.key.alt)) {
 						setFullscreen(true);
@@ -131,7 +140,7 @@ public:
 
 			rect.move(0.5f, 0.1f);
 
-			// W³¹czenie synchronizacji pionowej
+			// Wï¿½ï¿½czenie synchronizacji pionowej
 			window.setVerticalSyncEnabled(true);
 
 			window.clear(sf::Color::Black);
