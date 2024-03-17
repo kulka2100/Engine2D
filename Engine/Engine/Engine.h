@@ -9,6 +9,7 @@ private:
 		int height;
 		sf::RenderWindow window;
 		int limitFramrate;
+		bool fullScreen;
 		// Prywatny konstruktor, aby uniemo¿liwiæ tworzenie instancji z zewn¹trz. sprawdzenie czy okno zostalo poprawnie zainicjowane
 		// Po ":" wypisujemy liste inicjalizacyjn¹ zastepujaca np. this->width = w;
 		Engine(int w, int h) : width(w), height(h), window(sf::VideoMode(w, h), "Engine2D") {
@@ -27,6 +28,7 @@ private:
 				// Zakoñcz pracê silnika
 				exit(1);
 			}
+			
 
 		};
 
@@ -48,6 +50,14 @@ public:
 	//Metoda ustawiajaca limit klatek na sekunde
 	void setLimit(int limit) {
 		this->limitFramrate = limit;
+	}
+
+	//Metoda ustawiaj¹ca pozwalaj¹ca ustawiæ pe³ny ekran.sf::VideoMode::getFullscreenModes() zwraca listê obs³ugiwanych przez system trybów pe³noekranowych.[0] oznacza wybór pierwszego z listy
+	void setFullScreen(bool full) {
+		this->fullScreen = full;
+		if (fullScreen) {
+			window.create(sf::VideoMode::getFullscreenModes()[0], "Engine2D Full Screen", sf::Style::Fullscreen);
+		}
 	}
 
 	void run() {
