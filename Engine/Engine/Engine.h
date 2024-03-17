@@ -9,7 +9,7 @@ private:
 		int height;
 		sf::RenderWindow window;
 		int limitFramrate;
-		bool fullScreen;
+		bool fullscreen;
 		// Prywatny konstruktor, aby uniemo�liwi� tworzenie instancji z zewn�trz. sprawdzenie czy okno zostalo poprawnie zainicjowane
 		// Po ":" wypisujemy liste inicjalizacyjn� zastepujaca np. this->width = w;
 		Engine(int w, int h, bool fullscreen) : width(w), height(h), fullscreen(fullscreen), window(sf::VideoMode(w, h), "Engine2D") {
@@ -45,11 +45,11 @@ public:
 		return instance;
 	}
 
-	// Metoda pozwalaj�ca ustawi� pe�ny ekran
+	//Metoda ustawiaj�ca pozwalaj�ca ustawi� pe�ny ekran.sf::VideoMode::getFullscreenModes() zwraca list� obs�ugiwanych przez system tryb�w pe�noekranowych.[0] oznacza wyb�r pierwszego z listy
 	void setFullscreen(bool fullscreen) {
 		this->fullscreen = fullscreen;
 		if (fullscreen) {
-			window.create(sf::VideoMode(width, height), "Engine2D", sf::Style::Fullscreen);
+			window.create(sf::VideoMode::getFullscreenModes()[0], "Engine2D Full Screen", sf::Style::Fullscreen);
 		}
 		else {
 			window.create(sf::VideoMode(width, height), "Engine2D");
@@ -74,14 +74,6 @@ public:
 	//Metoda ustawiajaca limit klatek na sekunde
 	void setLimit(int limit) {
 		this->limitFramrate = limit;
-	}
-
-	//Metoda ustawiaj�ca pozwalaj�ca ustawi� pe�ny ekran.sf::VideoMode::getFullscreenModes() zwraca list� obs�ugiwanych przez system tryb�w pe�noekranowych.[0] oznacza wyb�r pierwszego z listy
-	void setFullScreen(bool full) {
-		this->fullScreen = full;
-		if (fullScreen) {
-			window.create(sf::VideoMode::getFullscreenModes()[0], "Engine2D Full Screen", sf::Style::Fullscreen);
-		}
 	}
 
 	void run() {
