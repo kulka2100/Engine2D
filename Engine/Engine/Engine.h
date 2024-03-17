@@ -9,9 +9,16 @@ private:
 		int height;
 		sf::RenderWindow window;
 		int limitFramrate;
+		bool fullscreen;
 		// Prywatny konstruktor, aby uniemo¿liwiæ tworzenie instancji z zewn¹trz. sprawdzenie czy okno zostalo poprawnie zainicjowane
 		// Po ":" wypisujemy liste inicjalizacyjn¹ zastepujaca np. this->width = w;
-		Engine(int w, int h) : width(w), height(h), window(sf::VideoMode(w, h), "Engine2D") {
+		Engine(int w, int h, bool fullscreen) : width(w), height(h), fullscreen(fullscreen), window(sf::VideoMode(w, h), "Engine2D") {
+			if (fullscreen) {
+				window.create(sf::VideoMode(w, h), "Engine2D", sf::Style::Fullscreen);
+			}
+			else {
+				window.create(sf::VideoMode(w, h), "Engine2D");
+			}
 			if (!window.isOpen() ) {
 				// Zapisanie komunikatu o bledzie w pliku logfile.txt
 				std::ofstream logfile("logfile.txt");
@@ -32,9 +39,27 @@ private:
 
 public:
 	// Metoda zwracaj¹ca instancjê singletona, zmienna static Engine inicjalizowana jest tylko raz i istnieje do koñca pracy programu
-	static Engine& getInstance(int w, int h) {
-		static Engine instance(w, h);
+	static Engine& getInstance(int w, int h, bool fullscreen) {
+		static Engine instance(w, h, fullscreen);
 		return instance;
+	}
+
+	// Metoda pozwalaj¹ca ustawiæ pe³ny ekran
+	void setFullscreen(bool fullscreen) {
+		this->fullscreen = fullscreen;
+		if (fullscreen) {
+			window.create(sf::VideoMode(width, height), "Engine2D", sf::Style::Fullscreen);
+		}
+		else {
+			window.create(sf::VideoMode(width, height), "Engine2D");
+		}
+	}
+
+	// Metoda ustawia wielkoœæ okna
+	void setWindowSize(int w, int h) {
+		width = w;
+		height = h;
+		window.setSize(sf::Vector2u(width, height));
 	}
 
 	// Czyszczenie bitmap
@@ -66,6 +91,26 @@ public:
 				if (event.type == sf::Event::Closed)
 					window.close();
 
+				// Ustawienie ekranu na rozdzielczosc 800x600 skrótem ALT+R
+				if (event.type == sf::Event::KeyPressed) {
+					if ((event.key.code == sf::Keyboard::R) && (event.key.alt)) {
+						if (fullscreen) {
+							setFullscreen(false);
+							setWindowSize(800, 600);
+						}
+						else {
+							setWindowSize(800, 600);
+						}
+					}
+				}
+
+				// Ustawienie pe³nego ekranu skrótem ALT+F (F-fullscreen)
+				if (event.type == sf::Event::KeyPressed) {
+					if ((event.key.code == sf::Keyboard::F) && (event.key.alt)) {
+						setFullscreen(true);
+					}
+				}
+
 				if (event.type == sf::Event::MouseButtonPressed) {
 					if (event.mouseButton.button == sf::Mouse::Left) {
 						std::cout << "Wcisnieto lewy przycisk myszy" << std::endl;
@@ -85,6 +130,9 @@ public:
 			}
 
 			rect.move(0.5f, 0.1f);
+
+			// W³¹czenie synchronizacji pionowej
+			window.setVerticalSyncEnabled(true);
 
 			window.clear(sf::Color::Black);
 			window.draw(rect);
