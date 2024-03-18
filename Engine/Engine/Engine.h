@@ -1,6 +1,12 @@
 #pragma once
 #include <iostream>
 #include <fstream>
+#include <SFML/Window/Keyboard.hpp>
+#include <SFML/Graphics/Color.hpp>
+#include <SFML/Graphics/RenderWindow.hpp>
+#include <SFML/Graphics/RectangleShape.hpp>
+#include <SFML/Window/Event.hpp>
+#include <SFML/System/Clock.hpp>
 
 class Engine
 {
@@ -10,9 +16,11 @@ private:
 		sf::RenderWindow window;
 		int limitFramrate;
 		bool fullscreen;
+		int moveCounter;
+		sf::Color bgColor;
 		// Prywatny konstruktor, aby uniemo�liwi� tworzenie instancji z zewn�trz. sprawdzenie czy okno zostalo poprawnie zainicjowane
 		// Po ":" wypisujemy liste inicjalizacyjn� zastepujaca np. this->width = w;
-		Engine(int w, int h, bool fullscreen) : width(w), height(h), fullscreen(fullscreen), window(sf::VideoMode(w, h), "Engine2D") {
+		Engine(int w, int h, bool fullscreen) : width(w), height(h), fullscreen(fullscreen), window(sf::VideoMode(w, h), "Engine2D"), moveCounter(0) {
 			if (fullscreen) {
 				window.create(sf::VideoMode(w, h), "Engine2D", sf::Style::Fullscreen);
 			}
@@ -68,6 +76,11 @@ public:
 		target.clear(color);
 	}
 
+	// Zamknięcie okna przed deinicjacją
+	~Engine() {
+		window.close(); 
+	}
+
 	Engine(const Engine&) = delete; // Wy��czenie konstruktora kopiuj�cego
 	Engine& operator = (const Engine&) = delete; // Wy��czenie operatora przypisania
 
@@ -79,6 +92,7 @@ public:
 	void run() {
 		window.setFramerateLimit(limitFramrate);
 		sf::RectangleShape rect(sf::Vector2f(50.f, 100.f)); //Na potrzeby testu
+		rect.setPosition(200.f, 200.f); //Ustawienie pozycji startowej
 
 		sf::Clock clock;
 
@@ -105,6 +119,26 @@ public:
 					}
 				}
 
+				// Obsługa strzałek na klawiaturze, które przesuwają nasz obiekt rect
+				if (event.type == sf::Event::KeyPressed) {
+					if (event.key.code == sf::Keyboard::Left) {
+						rect.move(-5.f, 0.f);
+						moveCounter++;
+					}
+					else if (event.key.code == sf::Keyboard::Right) {
+						rect.move(5.f, 0.f);
+						moveCounter++;
+					}
+					else if (event.key.code == sf::Keyboard::Up) {
+						rect.move(0.f, -5.f);
+						moveCounter++;
+					}
+					else if (event.key.code == sf::Keyboard::Down){
+						rect.move(0.f, 5.f);
+						moveCounter++;
+					}
+				}
+
 				// Ustawienie pe�nego ekranu skr�tem ALT+F (F-fullscreen)
 				if (event.type == sf::Event::KeyPressed) {
 					if ((event.key.code == sf::Keyboard::F) && (event.key.alt)) {
@@ -128,14 +162,26 @@ public:
 					std::cout << "Pozycja myszy: " << mousePosition.x << ", " << mousePosition.y << std::endl;
 				}
 
+				if (moveCounter == 5)
+				{
+					// Losujemy nowy kolor
+					bgColor = sf::Color(rand() % 256, rand() % 256, rand() % 256);
+					// Resetujemy licznik ruchów
+					moveCounter = 0;
+				}
+
+				
+
 			}
 
-			rect.move(0.5f, 0.1f);
+			// Czyszczenie ekranu do zadanego koloru (np. jasnoniebieski)
+			//window.clear(sf::Color(135, 206, 250));
+			// Czyścimy ekran do wylosowanego koloru
+			window.clear(bgColor);
 
 			// W��czenie synchronizacji pionowej
 			window.setVerticalSyncEnabled(true);
 
-			window.clear(sf::Color::Black);
 			window.draw(rect);
 
 			window.display();
