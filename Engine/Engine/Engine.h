@@ -7,17 +7,18 @@
 #include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/Window/Event.hpp>
 #include <SFML/System/Clock.hpp>
+#include "PrimitiveRenderer.h"
 
 class Engine
 {
 private:
 		int width;
 		int height;
-		sf::RenderWindow window;
 		int limitFramrate;
 		bool fullscreen;
 		int moveCounter;
 		sf::Color bgColor;
+		sf::RenderWindow window;
 		// Prywatny konstruktor, aby uniemo�liwi� tworzenie instancji z zewn�trz. sprawdzenie czy okno zostalo poprawnie zainicjowane
 		// Po ":" wypisujemy liste inicjalizacyjn� zastepujaca np. this->width = w;
 		Engine(int w, int h, bool fullscreen) : width(w), height(h), fullscreen(fullscreen), window(sf::VideoMode(w, h), "Engine2D"), moveCounter(0) {
@@ -51,6 +52,10 @@ public:
 	static Engine& getInstance(int w, int h, bool fullscreen) {
 		static Engine instance(w, h, fullscreen);
 		return instance;
+	}
+
+	sf::RenderWindow& getWindow() {
+		return window;
 	}
 
 	//Metoda ustawiaj�ca pozwalaj�ca ustawi� pe�ny ekran.sf::VideoMode::getFullscreenModes() zwraca list� obs�ugiwanych przez system tryb�w pe�noekranowych.[0] oznacza wyb�r pierwszego z listy
@@ -92,6 +97,9 @@ public:
 	void run() {
 		window.setFramerateLimit(limitFramrate);
 		sf::RectangleShape rect(sf::Vector2f(50.f, 100.f)); //Na potrzeby testu
+		PrimitiveRenderer newLine;
+		PrimitiveRenderer circle;
+
 		rect.setPosition(200.f, 200.f); //Ustawienie pozycji startowej
 
 		sf::Clock clock;
@@ -180,13 +188,17 @@ public:
 			window.clear(bgColor);
 
 			// W��czenie synchronizacji pionowej
-			window.setVerticalSyncEnabled(true);
-
+			//window.setVerticalSyncEnabled(true);
+			//newLine.drawLine(50, 40, 400, 100,window, sf::Color::Red);
+			circle.drawCircle(300, 300, 300, window, sf::Color::Blue);
 			window.draw(rect);
 
+			/* Naszą scenę tworzymy więc na buforze, którego zawartość jest automatycznie kopiowana na ekran w chwili wywołania metody display
+			W SFML zarzadzanie technika wielokrotnego buforowania nastepuje automatycznie
+			*/ 
 			window.display();
 
-			std::cout << "Czas trwania klatki: " << deltaTime.asSeconds() << " sekundy" << std::endl;
+			//std::cout << "Czas trwania klatki: " << deltaTime.asSeconds() << " sekundy" << std::endl;
 		}
 	}
 };
