@@ -37,33 +37,33 @@ void PrimitiveRenderer:: drawLine(int x0, int y0, int x1, int y1, sf::RenderWind
 
 
 
-// Nie dziala
-void PrimitiveRenderer::drawCircle(int xc, int yc, int R, sf::RenderWindow& window, sf::Color color) {
-	int x = R;
+// Algorytm rysowania okregu - osmiokrotna symetria
+void PrimitiveRenderer::drawCircle(int xc, int yc, int r, sf::RenderWindow& window, sf::Color color) {
+	int x = r;
 	int y = 0;
-	int radiusError = 1 - x;
+	int p = 1 - r;
 	int vertexIndex = 0;
-	sf::VertexArray circ(sf::Points, R * 8);
-
+	sf::VertexArray circ(sf::Points, r * 8);
 
 	while (x >= y) {
+		//Rysowanie 8 pikseli na ekranie korzystajac z symetrii okregu
 		circ[vertexIndex++].position = sf::Vector2f(xc + x, yc + y);
 		circ[vertexIndex++].position = sf::Vector2f(xc - x, yc + y);
 		circ[vertexIndex++].position = sf::Vector2f(xc + x, yc - y);
 		circ[vertexIndex++].position = sf::Vector2f(xc - x, yc - y);
-		circ[vertexIndex++].position = sf::Vector2f(xc + y, yc + y);
-		circ[vertexIndex++].position = sf::Vector2f(xc + y, yc - y);
-		circ[vertexIndex++].position = sf::Vector2f(xc - y, yc + y);
-		circ[vertexIndex++].position = sf::Vector2f(xc - y, yc - y);
+		circ[vertexIndex++].position = sf::Vector2f(xc + y, yc + x);
+		circ[vertexIndex++].position = sf::Vector2f(xc - y, yc + x);
+		circ[vertexIndex++].position = sf::Vector2f(xc + y, yc - x);
+		circ[vertexIndex++].position = sf::Vector2f(xc - y, yc - x);
 
 		y++;
 
-		if (radiusError < 0) {
-			radiusError += 2 * y + 1;
+		if (p < 0) {
+			p += 2 * y + 1;
 		}
 		else {
 			x--;
-			radiusError += 2 * (y - x + 1);
+			p += 2 * (y - x + 1);
 		}
 	}
 

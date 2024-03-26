@@ -16,7 +16,7 @@ public:
 	void drawLine(int x0, int y0, int x1, int y1, sf::RenderWindow& window, sf::Color color);
 
 	// Nie dziala
-	void drawCircle(int xc, int yc, int R, sf::RenderWindow& window, sf::Color color);
+	void drawCircle(int xc, int yc, int r, sf::RenderWindow& window, sf::Color color);
 
 };
 

@@ -151,7 +151,7 @@ void Engine::run() {
 		// Wylczenie synchronizacji pionowej
 		window.setVerticalSyncEnabled(true);
 		newLine.drawLine(50, 40, 400, 100,window, sf::Color::Red);
-		circle.drawCircle(300, 300, 300, window, sf::Color::Blue);
+		circle.drawCircle(300, 300, 100, window, sf::Color::Blue);
 		window.draw(rect);
 
 		/* Nasz¹ scenê tworzymy wiêc na buforze, którego zawartoœæ jest automatycznie kopiowana na ekran w chwili wywo³ania metody display
