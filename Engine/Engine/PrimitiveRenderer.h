@@ -15,8 +15,10 @@ public:
 
 	void drawLine(int x0, int y0, int x1, int y1, sf::RenderWindow& window, sf::Color color);
 
-	// Nie dziala
+	// Algorytm rysowania okregu - osmiokrotna symetria
 	void drawCircle(int xc, int yc, int r, sf::RenderWindow& window, sf::Color color);
+
+	void drawRectangle(std::vector<sf::Vector2f>& vertices, sf::RenderWindow& window, sf::Color color);
 
 };
 

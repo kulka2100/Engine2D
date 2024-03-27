@@ -2,7 +2,7 @@
 
 void PrimitiveRenderer:: drawLine(int x0, int y0, int x1, int y1, sf::RenderWindow& window, sf::Color color) {
 	// Tablica wierzcholkow reprezentujacych linie
-	sf::VertexArray line(sf::Lines, 2);
+	sf::VertexArray line(sf::Points, 2);
 	int x;
 	float dy, dx, y, m;
 
@@ -73,3 +73,26 @@ void PrimitiveRenderer::drawCircle(int xc, int yc, int r, sf::RenderWindow& wind
 	window.draw(circ);
 }
 
+
+//Rysowanie prostokatow
+void PrimitiveRenderer::drawRectangle(std::vector<sf::Vector2f>& vertices, sf::RenderWindow& window, sf::Color color) {
+	sf::VertexArray rectangle(sf::Points, 4);
+	//nowa tablica do ustawienia koloru rysowanych linii
+	sf::VertexArray outline(sf::LinesStrip, 5);
+
+	if (vertices.size() == 4)
+		for (size_t i = 0; i < 4; i++)
+			rectangle[i].position = vertices[i];
+	//
+	outline[0].position = rectangle[0].position;
+	outline[1].position = rectangle[1].position;
+	outline[2].position = rectangle[2].position;
+	outline[3].position = rectangle[3].position;
+	outline[4].position = rectangle[0].position;
+
+	for (int i = 0; i < 5; ++i) {
+		outline[i].color = color;
+	}
+
+	window.draw(outline);
+}

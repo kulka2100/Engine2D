@@ -57,11 +57,18 @@ void Engine::setWindowSize(int w, int h) {
 
 void Engine::run() {
 	window.setFramerateLimit(limitFramrate);
-	sf::RectangleShape rect(sf::Vector2f(50.f, 100.f)); //Na potrzeby testu
 	PrimitiveRenderer newLine;
 	PrimitiveRenderer circle;
+	PrimitiveRenderer rectangle;
 
-	rect.setPosition(200.f, 200.f); //Ustawienie pozycji startowej
+
+	std::vector<sf::Vector2f> vertices = {
+		sf::Vector2f(100, 50),
+		sf::Vector2f(200, 100),
+		sf::Vector2f(200, 200),
+		sf::Vector2f(100, 150)
+	};
+
 
 	sf::Clock clock;
 
@@ -89,7 +96,7 @@ void Engine::run() {
 			}
 
 			// Obs³uga strza³ek na klawiaturze, które przesuwaj¹ nasz obiekt rect
-			if (event.type == sf::Event::KeyPressed) {
+			/*if (event.type == sf::Event::KeyPressed) {
 				if (event.key.code == sf::Keyboard::Left) {
 					rect.move(-5.f, 0.f);
 					moveCounter++;
@@ -106,7 +113,7 @@ void Engine::run() {
 					rect.move(0.f, 5.f);
 					moveCounter++;
 				}
-			}
+			}*/
 
 			// Ustawienie pelnego ekranu skrotem ALT+F (F-fullscreen)
 			if (event.type == sf::Event::KeyPressed) {
@@ -117,7 +124,9 @@ void Engine::run() {
 
 			if (event.type == sf::Event::MouseButtonPressed) {
 				if (event.mouseButton.button == sf::Mouse::Left) {
-					std::cout << "Wcisnieto lewy przycisk myszy" << std::endl;
+					sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
+					std::cout << "Pozycja myszy: " << mousePosition.x << ", " << mousePosition.y << std::endl;
+					//std::cout << "Wcisnieto lewy przycisk myszy" << std::endl;
 					//dalsza obsluga zdarzenia
 				}
 				else if (event.mouseButton.button == sf::Mouse::Right) {
@@ -126,10 +135,10 @@ void Engine::run() {
 				}
 			}
 
-			if (event.type == sf::Event::MouseMoved) {
+		/*	if (event.type == sf::Event::MouseMoved) {
 				sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
 				std::cout << "Pozycja myszy: " << mousePosition.x << ", " << mousePosition.y << std::endl;
-			}
+			}*/
 
 			if (moveCounter == 5)
 			{
@@ -150,9 +159,10 @@ void Engine::run() {
 
 		// Wylczenie synchronizacji pionowej
 		window.setVerticalSyncEnabled(true);
+
 		newLine.drawLine(50, 40, 400, 100,window, sf::Color::Red);
 		circle.drawCircle(300, 300, 100, window, sf::Color::Blue);
-		window.draw(rect);
+		rectangle.drawRectangle(vertices, window, sf::Color::Red);
 
 		/* Nasz¹ scenê tworzymy wiêc na buforze, którego zawartoœæ jest automatycznie kopiowana na ekran w chwili wywo³ania metody display
 		W SFML zarzadzanie technika wielokrotnego buforowania nastepuje automatycznie
