@@ -73,6 +73,33 @@ void PrimitiveRenderer::drawCircle(int xc, int yc, int r, sf::RenderWindow& wind
 	window.draw(circ);
 }
 
+void PrimitiveRenderer::drawElipse(int xc, int yc, int a, int b, sf::RenderWindow& window, sf::Color color) {
+	sf::VertexArray elipse(sf::Points);
+
+	for (int x = -a; x <= a; x++) {
+		int y = (b * sqrt(1 - (1.0 * x * x) / (a * a)));
+		elipse.append(sf::Vector2f(xc + x, yc + y));
+		elipse.append(sf::Vector2f(xc + x, yc - y));
+	}
+
+
+	for (int y = -b; y <= b; y++) {
+		int x = (a * sqrt(1 - (1.0 * y * y) / (b * b)));
+
+		elipse.append(sf::Vertex(sf::Vector2f(xc + x, yc + y)));
+		elipse.append(sf::Vertex(sf::Vector2f(xc - x, yc + y)));
+	}
+
+
+	for (int i = 0; i < elipse.getVertexCount(); i++) 
+		elipse[i].color = color;
+
+
+	window.draw(elipse);
+}
+
+
+
 
 //Rysowanie prostokatow
 void PrimitiveRenderer::drawRectangle(std::vector<sf::Vector2f>& vertices, sf::RenderWindow& window, sf::Color color) {

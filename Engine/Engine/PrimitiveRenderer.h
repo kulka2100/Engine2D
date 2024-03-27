@@ -18,6 +18,9 @@ public:
 	// Algorytm rysowania okregu - osmiokrotna symetria
 	void drawCircle(int xc, int yc, int r, sf::RenderWindow& window, sf::Color color);
 
+	//Rysowanie Elipsy
+	void drawElipse(int xc, int yc, int a, int b, sf::RenderWindow& window, sf::Color color);
+
 	void drawRectangle(std::vector<sf::Vector2f>& vertices, sf::RenderWindow& window, sf::Color color);
 
 };
