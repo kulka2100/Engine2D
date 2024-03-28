@@ -1,4 +1,15 @@
 #include "PrimitiveRenderer.h"
+#include <SFML/Window/Keyboard.hpp>
+#include <SFML/Graphics/Color.hpp>
+#include <SFML/Graphics/RenderWindow.hpp>
+#include <SFML/Graphics/RectangleShape.hpp>
+#include <SFML/Window/Event.hpp>
+#include <SFML/System/Clock.hpp>
+#include <SFML/System/Sleep.hpp>
+
+
+
+
 
 void PrimitiveRenderer:: drawLine(int x0, int y0, int x1, int y1, sf::RenderWindow& window, sf::Color color) {
 	// Tablica wierzcholkow reprezentujacych linie
@@ -39,13 +50,14 @@ void PrimitiveRenderer:: drawLine(int x0, int y0, int x1, int y1, sf::RenderWind
 
 // Algorytm rysowania okregu - osmiokrotna symetria
 void PrimitiveRenderer::drawCircle(int xc, int yc, int r, sf::RenderWindow& window, sf::Color color) {
-	int x = r;
-	int y = 0;
-	int p = 1 - r;
+	int x = 0;
+	int y = r;
+	int p = 3 - (2 * r);
 	int vertexIndex = 0;
 	sf::VertexArray circ(sf::Points, r * 8);
 
-	while (x >= y) {
+	//Dopoki nie narysujemy 1/8 czesci okregu
+	while (x <= y) {
 		//Rysowanie 8 pikseli na ekranie korzystajac z symetrii okregu
 		circ[vertexIndex++].position = sf::Vector2f(xc + x, yc + y);
 		circ[vertexIndex++].position = sf::Vector2f(xc - x, yc + y);
@@ -56,33 +68,36 @@ void PrimitiveRenderer::drawCircle(int xc, int yc, int r, sf::RenderWindow& wind
 		circ[vertexIndex++].position = sf::Vector2f(xc + y, yc - x);
 		circ[vertexIndex++].position = sf::Vector2f(xc - y, yc - x);
 
-		y++;
-
-		if (p < 0) {
-			p += 2 * y + 1;
+		x++;
+		//jesli p <= 0, punkt znajduje sie wewnatrz okregu, zwiekszamy wtedy x, y pozostaje bez zmian
+		if (p <= 0) {
+			p += 4 * x + 6;
 		}
+		// W przeciwnym wypadku punkt lezy na zewnatrz, zmniejszamy wtedy y i zwiekszamy x
 		else {
-			x--;
-			p += 2 * (y - x + 1);
+			p += 4 * (x - y) + 10;
+			y--;
 		}
 	}
 
 	for (int i = 0; i < circ.getVertexCount(); ++i) {
 		circ[i].color = color;
-	}
+	}	
 	window.draw(circ);
+
 }
 
 void PrimitiveRenderer::drawElipse(int xc, int yc, int a, int b, sf::RenderWindow& window, sf::Color color) {
 	sf::VertexArray elipse(sf::Points);
 
+	// zmienne a i b reprezentuja poszczegolne promienie elipsy
 	for (int x = -a; x <= a; x++) {
-		int y = (b * sqrt(1 - (1.0 * x * x) / (a * a)));
-		elipse.append(sf::Vector2f(xc + x, yc + y));
-		elipse.append(sf::Vector2f(xc + x, yc - y));
+		int y =(b * sqrt(1 - (1.0 * x * x) / (a * a)));
+			elipse.append(sf::Vector2f(xc + x, yc + y));
+			elipse.append(sf::Vector2f(xc + x, yc - y));
 	}
 
-
+	//uzylem dwoch petli w przypadku jednej powstawaly dziury
 	for (int y = -b; y <= b; y++) {
 		int x = (a * sqrt(1 - (1.0 * y * y) / (b * b)));
 
@@ -90,10 +105,9 @@ void PrimitiveRenderer::drawElipse(int xc, int yc, int a, int b, sf::RenderWindo
 		elipse.append(sf::Vertex(sf::Vector2f(xc - x, yc + y)));
 	}
 
-
+	
 	for (int i = 0; i < elipse.getVertexCount(); i++) 
 		elipse[i].color = color;
-
 
 	window.draw(elipse);
 }

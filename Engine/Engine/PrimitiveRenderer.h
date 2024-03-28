@@ -11,7 +11,6 @@
 class PrimitiveRenderer {
 
 public:
-	const float M_PI = 3.14159f;
 
 	void drawLine(int x0, int y0, int x1, int y1, sf::RenderWindow& window, sf::Color color);
 

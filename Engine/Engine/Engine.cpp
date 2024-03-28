@@ -1,6 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include "Engine.h"
 #include "PrimitiveRenderer.h"
+#include "Point2D.h"
 
 
 
@@ -61,6 +62,7 @@ void Engine::run() {
 	PrimitiveRenderer circle;
 	PrimitiveRenderer rectangle;
 	PrimitiveRenderer elipse;
+	Point2D ptk(700, 400);
 
 	std::vector<sf::Vector2f> vertices = {
 		sf::Vector2f(100, 50),
@@ -156,14 +158,16 @@ void Engine::run() {
 		//window.clear(sf::Color(135, 206, 250));
 		// Czyœcimy ekran do wylosowanego koloru
 		window.clear(bgColor);
-
 		// Wylczenie synchronizacji pionowej
 		window.setVerticalSyncEnabled(true);
 
 		newLine.drawLine(50, 40, 400, 100,window, sf::Color::Red);
-		circle.drawCircle(300, 300, 100, window, sf::Color::Blue);
+		circle.drawCircle(50, 70, 50, window, sf::Color::Magenta);
 		rectangle.drawRectangle(vertices, window, sf::Color::Red);
-		elipse.drawElipse(400, 300, 10, 30, window, sf::Color::Yellow);
+		elipse.drawElipse(400, 300, 100, 50, window, sf::Color::Yellow);
+		ptk.setPoint(500, 380);
+		ptk.drawPoint(ptk, window, sf::Color::Cyan);
+	
 
 		/* Nasz¹ scenê tworzymy wiêc na buforze, którego zawartoœæ jest automatycznie kopiowana na ekran w chwili wywo³ania metody display
 		W SFML zarzadzanie technika wielokrotnego buforowania nastepuje automatycznie
