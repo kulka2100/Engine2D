@@ -8,6 +8,7 @@
 #include <SFML/Window/Event.hpp>
 #include <SFML/System/Clock.hpp>
 #include "PrimitiveRenderer.h"
+#include "BitmapHandler.h"
 
 class Engine
 {
@@ -21,6 +22,8 @@ private:
 		sf::RenderWindow window;
 		// Prywatny konstruktor, aby uniemozliwic tworzenie instancji z zewn�trz. sprawdzenie czy okno zostalo poprawnie zainicjowane
 		Engine(int w, int h, bool fullscreen);
+		// Obiekt do obsługi bitmapy
+		BitmapHandler bitmapa;
 
 public:
 	// Metoda zwracajaca instancje singletona, zmienna static Engine inicjalizowana jest tylko raz i istnieje do ko�ca pracy programu
@@ -47,6 +50,15 @@ public:
 
 	//Metoda ustawiajaca limit klatek na sekunde
 	void setLimit(int limit);
+
+	// Metoda do wczytywania bitmapy z pliku
+	void zaladujBitmape(const std::string& nazwaPliku);
+
+	// Metoda do zapisywania bitmapy do pliku
+	void zapiszBitmape(const std::string& nazwaPliku);
+
+	// Metoda do kopiowania fragmentu bitmapy
+	void skopiujBitmapyZSilnika(int x, int y, int szerokosc, int wysokosc);
 
 	//Glowna petla
 	void run();

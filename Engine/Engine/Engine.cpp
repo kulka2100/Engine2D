@@ -56,6 +56,18 @@ void Engine::setWindowSize(int w, int h) {
 	window.setSize(sf::Vector2u(width, height));
 }
 
+void Engine::zaladujBitmape(const std::string& nazwaPliku) {
+	bitmapa.zaladujZPliku(nazwaPliku);
+}
+
+void Engine::zapiszBitmape(const std::string& nazwaPliku) {
+	bitmapa.zapiszDoPliku(nazwaPliku);
+}
+
+void Engine::skopiujBitmapyZSilnika(int x, int y, int szerokosc, int wysokosc) {
+	bitmapa.skopiujZBitmapy(bitmapa, x, y, szerokosc, wysokosc); // Wywo³anie metody z obiektu bitmapy
+}
+
 void Engine::run() {
 	window.setFramerateLimit(limitFramrate);
 	PrimitiveRenderer newLine;
@@ -167,6 +179,18 @@ void Engine::run() {
 		elipse.drawElipse(400, 300, 100, 50, window, sf::Color::Yellow);
 		ptk.setPoint(500, 380);
 		ptk.drawPoint(ptk, window, sf::Color::Cyan);
+
+		// wczytywanie bitmapy z pliku
+		zaladujBitmape("bitmapa.png");
+
+		// zapisywanie bitmapy do pliku
+		zapiszBitmape("nowa_bitmapa.png");
+
+		// kopiowanie fragmentu bitmapy z silnika do samego siebie
+		// skopiujBitmapyZSilnika(100, 100, 200, 200);
+
+		// rysowanie bitmapy na ekranie
+		bitmapa.rysujNaRenderWindow(window, 300, 300);
 	
 
 		/* Nasz¹ scenê tworzymy wiêc na buforze, którego zawartoœæ jest automatycznie kopiowana na ekran w chwili wywo³ania metody display
