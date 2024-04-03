@@ -5,6 +5,7 @@
 #include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/Window/Event.hpp>
 #include <SFML/System/Clock.hpp>
+#include <SFML/Graphics.hpp>
 #include <iostream>
 
 
@@ -22,5 +23,13 @@ public:
 
 	void drawRectangle(std::vector<sf::Vector2f>& vertices, sf::RenderWindow& window, sf::Color color);
 
+	void move(float x, float y);
+
+private:
+	std::vector<sf::Vector2f> points;
+	std::vector<sf::VertexArray> lines;
+	std::vector<sf::RectangleShape> rectangles;
+	std::vector<sf::CircleShape> circles;
+	std::vector<sf::FloatRect> ellipses;
 };
 

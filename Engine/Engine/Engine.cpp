@@ -86,6 +86,7 @@ void Engine::run() {
 
 	sf::Clock clock;
 
+
 	while (window.isOpen()) {
 		//Pobiera czas, ktory uplynal od ostatniego wywolania clock.restart()
 		sf::Time deltaTime = clock.restart();
@@ -110,24 +111,24 @@ void Engine::run() {
 			}
 
 			// Obs³uga strza³ek na klawiaturze, które przesuwaj¹ nasz obiekt rect
-			/*if (event.type == sf::Event::KeyPressed) {
+			if (event.type == sf::Event::KeyPressed) {
 				if (event.key.code == sf::Keyboard::Left) {
-					rect.move(-5.f, 0.f);
+					circle.move(-5.f, 0.f);
 					moveCounter++;
 				}
 				else if (event.key.code == sf::Keyboard::Right) {
-					rect.move(5.f, 0.f);
+					circle.move(5.f, 0.f);
 					moveCounter++;
 				}
 				else if (event.key.code == sf::Keyboard::Up) {
-					rect.move(0.f, -5.f);
+					circle.move(0.f, -5.f);
 					moveCounter++;
 				}
 				else if (event.key.code == sf::Keyboard::Down) {
-					rect.move(0.f, 5.f);
+					circle.move(0.f, 5.f);
 					moveCounter++;
 				}
-			}*/
+			}
 
 			// Ustawienie pelnego ekranu skrotem ALT+F (F-fullscreen)
 			if (event.type == sf::Event::KeyPressed) {

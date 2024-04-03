@@ -137,3 +137,36 @@ void PrimitiveRenderer::drawRectangle(std::vector<sf::Vector2f>& vertices, sf::R
 
 	window.draw(outline);
 }
+
+//przesuwanie za pomoca funkcji move
+void PrimitiveRenderer::move(float x, float y) {
+	// Przesuwanie wszystkich punktów rysunku o podane przesuniêcie (x, y)
+	for (auto& point : points) {
+		point.x += x;
+		point.y += y;
+	}
+
+	// Przesuwanie wszystkich linii rysunku o podane przesuniêcie (x, y)
+	for (auto& line : lines) {
+		line[0].position.x += x;
+		line[0].position.y += y;
+		line[1].position.x += x;
+		line[1].position.y += y;
+	}
+
+	// Przesuwanie wszystkich prostok¹tów rysunku o podane przesuniêcie (x, y)
+	for (auto& rectangle : rectangles) {
+		rectangle.setPosition(rectangle.getPosition().x + x, rectangle.getPosition().y + y);
+	}
+
+	// Przesuwanie wszystkich kó³ rysunku o podane przesuniêcie (x, y)
+	for (auto& circle : circles) {
+		circle.setPosition(circle.getPosition().x + x, circle.getPosition().y + y);
+	}
+
+	// Przesuwanie wszystkich elips rysunku o podane przesuniêcie (x, y)
+	for (auto& ellipse : ellipses) {
+		ellipse.left += x;
+		ellipse.top += y;
+	}
+}
