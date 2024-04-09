@@ -12,11 +12,21 @@
 class PrimitiveRenderer {
 
 public:
+	PrimitiveRenderer();
+	float c1, c2;
+
+	//int getPositionX();
+
+	//int getPositionY();
+
+	//void setPositionX(int x);
+
+	//void setPositionY(int y);
 
 	void drawLine(int x0, int y0, int x1, int y1, sf::RenderWindow& window, sf::Color color);
 
 	// Algorytm rysowania okregu - osmiokrotna symetria
-	void drawCircle(int xc, int yc, int r, sf::RenderWindow& window, sf::Color color);
+	void drawCircle(int r, sf::RenderWindow& window, sf::Color color);
 
 	//Rysowanie Elipsy
 	void drawElipse(int xc, int yc, int a, int b, sf::RenderWindow& window, sf::Color color);
@@ -25,11 +35,5 @@ public:
 
 	void move(float x, float y);
 
-private:
-	std::vector<sf::Vector2f> points;
-	std::vector<sf::VertexArray> lines;
-	std::vector<sf::RectangleShape> rectangles;
-	std::vector<sf::CircleShape> circles;
-	std::vector<sf::FloatRect> ellipses;
 };
 

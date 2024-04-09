@@ -6,9 +6,28 @@
 #include <SFML/Window/Event.hpp>
 #include <SFML/System/Clock.hpp>
 #include <SFML/System/Sleep.hpp>
+#include "Engine.h"
 
 
+PrimitiveRenderer::PrimitiveRenderer() : c1(70), c2(70) {
+	
+}
 
+//int PrimitiveRenderer::getPositionX() {
+//	return c1;
+//}
+//
+//int PrimitiveRenderer::getPositionY() {
+//	return c2;
+//}
+//
+//void PrimitiveRenderer::setPositionX(int x) {
+//	c1 = x;
+//}
+//
+//void PrimitiveRenderer::setPositionY(int y) {
+//	c2 = y;
+//}
 
 
 void PrimitiveRenderer:: drawLine(int x0, int y0, int x1, int y1, sf::RenderWindow& window, sf::Color color) {
@@ -49,10 +68,12 @@ void PrimitiveRenderer:: drawLine(int x0, int y0, int x1, int y1, sf::RenderWind
 
 
 // Algorytm rysowania okregu - osmiokrotna symetria
-void PrimitiveRenderer::drawCircle(int xc, int yc, int r, sf::RenderWindow& window, sf::Color color) {
+void PrimitiveRenderer::drawCircle(int r, sf::RenderWindow& window, sf::Color color) {
 	int x = 0;
 	int y = r;
 	int p = 3 - (2 * r);
+	int xc = c1;
+	int yc = c2;
 	int vertexIndex = 0;
 	sf::VertexArray circ(sf::Points, r * 8);
 
@@ -138,35 +159,8 @@ void PrimitiveRenderer::drawRectangle(std::vector<sf::Vector2f>& vertices, sf::R
 	window.draw(outline);
 }
 
-//przesuwanie za pomoca funkcji move
 void PrimitiveRenderer::move(float x, float y) {
-	// Przesuwanie wszystkich punktów rysunku o podane przesuniêcie (x, y)
-	for (auto& point : points) {
-		point.x += x;
-		point.y += y;
-	}
-
-	// Przesuwanie wszystkich linii rysunku o podane przesuniêcie (x, y)
-	for (auto& line : lines) {
-		line[0].position.x += x;
-		line[0].position.y += y;
-		line[1].position.x += x;
-		line[1].position.y += y;
-	}
-
-	// Przesuwanie wszystkich prostok¹tów rysunku o podane przesuniêcie (x, y)
-	for (auto& rectangle : rectangles) {
-		rectangle.setPosition(rectangle.getPosition().x + x, rectangle.getPosition().y + y);
-	}
-
-	// Przesuwanie wszystkich kó³ rysunku o podane przesuniêcie (x, y)
-	for (auto& circle : circles) {
-		circle.setPosition(circle.getPosition().x + x, circle.getPosition().y + y);
-	}
-
-	// Przesuwanie wszystkich elips rysunku o podane przesuniêcie (x, y)
-	for (auto& ellipse : ellipses) {
-		ellipse.left += x;
-		ellipse.top += y;
-	}
+	c1 += x;
+	c2 += y;
 }
+

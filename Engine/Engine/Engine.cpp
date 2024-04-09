@@ -86,7 +86,6 @@ void Engine::run() {
 
 	sf::Clock clock;
 
-
 	while (window.isOpen()) {
 		//Pobiera czas, ktory uplynal od ostatniego wywolania clock.restart()
 		sf::Time deltaTime = clock.restart();
@@ -175,10 +174,10 @@ void Engine::run() {
 		window.setVerticalSyncEnabled(true);
 
 		newLine.drawLine(50, 40, 400, 100,window, sf::Color::Red);
-		circle.drawCircle(50, 70, 50, window, sf::Color::Magenta);
+		circle.drawCircle(50, window, sf::Color::Magenta);
 		rectangle.drawRectangle(vertices, window, sf::Color::Red);
 		elipse.drawElipse(400, 300, 100, 50, window, sf::Color::Yellow);
-		ptk.setPoint(500, 380);
+		ptk.setPoint(100, 380);
 		ptk.drawPoint(ptk, window, sf::Color::Cyan);
 
 		// wczytywanie bitmapy z pliku
