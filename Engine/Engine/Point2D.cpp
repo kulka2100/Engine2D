@@ -1,5 +1,6 @@
 #include "Point2D.h"
 
+
 void Point2D::setPoint(float x, float y) {
 	point.x = x;
 	point.y = y;
@@ -11,4 +12,9 @@ void Point2D::drawPoint(Point2D& ptk, sf::RenderWindow& window, sf::Color color)
 	points.append(sf::Vector2f(point.x, point.y));
 	points[0].color = color;
 	window.draw(points);
+}
+
+void Point2D::update() {
+	point.x += direction.x * speed;
+	point.y += direction.y * speed;
 }

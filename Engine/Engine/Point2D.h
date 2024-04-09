@@ -12,13 +12,19 @@ class Point2D
 {
 private:
 	sf::Vector2f point;
+	float x, y;
+	sf::Vector2f direction;
+	float speed;
+	
 
 public:
 	Point2D() {};
 
-	Point2D(float x, float y) : point(x, y) {};
+	Point2D(float x, float y, sf::Vector2f dir, float spd) : point(x, y), direction(dir), speed(spd) {}
 
 	void setPoint(float x, float y);
+
+	void update();
 
 	sf::Vector2f getPoint() {
 		return point;

@@ -43,10 +43,14 @@ void Engine:: clearScreen(sf::RenderTarget& target, const sf::Color& color) {
 void Engine::setFullscreen(bool fullscreen) {
 	this->fullscreen = fullscreen;
 	if (fullscreen) {
-		window.create(sf::VideoMode::getFullscreenModes()[0], "Engine2D Full Screen", sf::Style::Fullscreen);
+		sf::VideoMode fullscreenMode = sf::VideoMode::getFullscreenModes()[0];
+		window.create(fullscreenMode, "Engine2D Full Screen", sf::Style::Fullscreen);
+		width = fullscreenMode.width;
+		height = fullscreenMode.height;
 	}
 	else {
 		window.create(sf::VideoMode(width, height), "Engine2D");
+
 	}
 }
 
@@ -74,7 +78,10 @@ void Engine::run() {
 	PrimitiveRenderer circle;
 	PrimitiveRenderer rectangle;
 	PrimitiveRenderer elipse;
-	Point2D ptk(700, 400);
+	//Point2D ptk(700, 400);
+	//Point2D newPoint(circle.c1, circle.c2);
+	//std::vector<Point2D> startPoints;
+	bool bgWhite = true;
 
 	std::vector<sf::Vector2f> vertices = {
 		sf::Vector2f(100, 50),
@@ -93,8 +100,9 @@ void Engine::run() {
 
 		//Nasluchiwnie zdarzen
 		while (window.pollEvent(event)) {
-			if (event.type == sf::Event::Closed)
+			if (event.type == sf::Event::Closed) {
 				window.close();
+			} 
 
 			// Ustawienie ekranu na rozdzielczosc 800x600 skrotem ALT+R
 			if (event.type == sf::Event::KeyPressed) {
@@ -139,15 +147,47 @@ void Engine::run() {
 			if (event.type == sf::Event::MouseButtonPressed) {
 				if (event.mouseButton.button == sf::Mouse::Left) {
 					sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
-					std::cout << "Pozycja myszy: " << mousePosition.x << ", " << mousePosition.y << std::endl;
-					//std::cout << "Wcisnieto lewy przycisk myszy" << std::endl;
-					//dalsza obsluga zdarzenia
+					sf::Vector2f direction = sf::Vector2f(mousePosition) - sf::Vector2f(circle.c1, circle.c2);
+					float length = std::sqrt(direction.x * direction.x + direction.y * direction.y);
+
+					// Normalizujemy wektor kierunku, aby uzyskaæ wektor jednostkowy
+					if (length != 0) {
+						direction /= length;
+					}
+
+					// Obliczamy punkt na obwodzie okrêgu, który bêdzie punktem pocz¹tkowym przemieszczenia
+					Point2D startPoint(circle.c1, circle.c2, direction, 5.0f);
+					//startPoints.push_back(Point2D(circle.c1, circle.c2, direction, 5.0f));
+
+					// Dopóki punkt jest na ekranie, przesuwamy go w kierunku klikniêcia
+					while (window.isOpen() && startPoint.getPoint().x >= 0 && startPoint.getPoint().x <= width && startPoint.getPoint().y >= 0 && startPoint.getPoint().y <= height) {
+						// Aktualizujemy po³o¿enie punktu
+						startPoint.update();
+
+						// Czyscimy ekran
+						window.clear(bgColor);
+
+						// Rysujemy wszystkie elementy
+						newLine.drawLine(50, 40, 400, 100, window, sf::Color::Red);
+						circle.drawCircle(50, window, sf::Color::Magenta);
+						rectangle.drawRectangle(vertices, window, sf::Color::Red);
+						elipse.drawElipse(400, 300, 100, 50, window, sf::Color::Yellow);
+						//ptk.setPoint(100, 380);
+						//ptk.drawPoint(ptk, window, sf::Color::Cyan);
+
+						// Rysujemy punkt
+						startPoint.drawPoint(startPoint, window, sf::Color::Red);
+
+						// Wyœwietlamy wszystkie elementy
+						window.display();
+					}
 				}
 				else if (event.mouseButton.button == sf::Mouse::Right) {
 					std::cout << "Wcisnieto prawy przycisk myszy" << std::endl;
 					//dalsza obsluga zdarzenia
 				}
 			}
+
 
 		/*	if (event.type == sf::Event::MouseMoved) {
 				sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
@@ -156,11 +196,29 @@ void Engine::run() {
 
 			if (moveCounter == 5)
 			{
-				// Losujemy nowy kolor
-				bgColor = sf::Color(rand() % 256, rand() % 256, rand() % 256);
+				if (bgWhite) {
+					bgColor.r = std::max(bgColor.r - 32, 0);
+					bgColor.g = std::max(bgColor.g - 32, 0);
+					bgColor.b = std::max(bgColor.b - 32, 0);
+					if (bgColor.r == 0 && bgColor.g == 0 && bgColor.b == 0) {
+						bgWhite = false;
+					}
+				}
+				else {
+					bgColor.r = std::min(bgColor.r + 32, 255);
+					bgColor.g = std::min(bgColor.g + 32, 255);
+					bgColor.b = std::min(bgColor.b + 32, 255);
+					if (bgColor.r == 255 && bgColor.g == 255 && bgColor.b == 255) {
+						bgWhite = true;
+					}
+				}
+
 				// Resetujemy licznik ruchów
 				moveCounter = 0;
 			}
+
+
+
 
 
 
@@ -177,8 +235,9 @@ void Engine::run() {
 		circle.drawCircle(50, window, sf::Color::Magenta);
 		rectangle.drawRectangle(vertices, window, sf::Color::Red);
 		elipse.drawElipse(400, 300, 100, 50, window, sf::Color::Yellow);
-		ptk.setPoint(100, 380);
-		ptk.drawPoint(ptk, window, sf::Color::Cyan);
+		//ptk.setPoint(100, 380);
+		//ptk.drawPoint(ptk, window, sf::Color::Cyan);
+		//newPoint.drawPoint(newPoint, window, sf::Color::Red);
 
 		// wczytywanie bitmapy z pliku
 		zaladujBitmape("bitmapa.png");
