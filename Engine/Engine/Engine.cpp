@@ -2,6 +2,7 @@
 #include "Engine.h"
 #include "PrimitiveRenderer.h"
 #include "Point2D.h"
+#include "Bullet.h"
 
 
 
@@ -17,7 +18,7 @@ Engine:: Engine(int w, int h, bool fullscreen) : width(w), height(h), fullscreen
 		// Zapisanie komunikatu o bledzie w pliku logfile.txt
 		std::ofstream logfile("logfile.txt");
 		if (logfile.is_open()) {
-			logfile << "B??d inicjalizacji okna." << std::endl;
+			logfile << "Blad inicjalizacji okna." << std::endl;
 		}
 		else {
 			std::cerr << "Blad otwarcia pliku do zapisu." << std::endl;
@@ -78,9 +79,8 @@ void Engine::run() {
 	PrimitiveRenderer circle;
 	PrimitiveRenderer rectangle;
 	PrimitiveRenderer elipse;
-	//Point2D ptk(700, 400);
-	//Point2D newPoint(circle.c1, circle.c2);
-	//std::vector<Point2D> startPoints;
+	PrimitiveRenderer player;
+	Point2D ptk(700, 400);
 	bool bgWhite = true;
 
 	std::vector<sf::Vector2f> vertices = {
@@ -106,7 +106,7 @@ void Engine::run() {
 
 			// Ustawienie ekranu na rozdzielczosc 800x600 skrotem ALT+R
 			if (event.type == sf::Event::KeyPressed) {
-				if ((event.key.code == sf::Keyboard::R) && (event.key.alt)) {
+				if (((event.key.code == sf::Keyboard::R) && (event.key.alt)) || (event.key.code == sf::Keyboard::Escape)) {
 					if (fullscreen) {
 						setFullscreen(false);
 						setWindowSize(800, 600);
@@ -120,19 +120,19 @@ void Engine::run() {
 			// Obs³uga strza³ek na klawiaturze, które przesuwaj¹ nasz obiekt rect
 			if (event.type == sf::Event::KeyPressed) {
 				if (event.key.code == sf::Keyboard::Left) {
-					circle.move(-5.f, 0.f);
+					player.move(-5.f, 0.f);
 					moveCounter++;
 				}
 				else if (event.key.code == sf::Keyboard::Right) {
-					circle.move(5.f, 0.f);
+					player.move(5.f, 0.f);
 					moveCounter++;
 				}
 				else if (event.key.code == sf::Keyboard::Up) {
-					circle.move(0.f, -5.f);
+					player.move(0.f, -5.f);
 					moveCounter++;
 				}
 				else if (event.key.code == sf::Keyboard::Down) {
-					circle.move(0.f, 5.f);
+					player.move(0.f, 5.f);
 					moveCounter++;
 				}
 			}
@@ -147,7 +147,7 @@ void Engine::run() {
 			if (event.type == sf::Event::MouseButtonPressed) {
 				if (event.mouseButton.button == sf::Mouse::Left) {
 					sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
-					sf::Vector2f direction = sf::Vector2f(mousePosition) - sf::Vector2f(circle.c1, circle.c2);
+					sf::Vector2f direction = sf::Vector2f(mousePosition) - sf::Vector2f(player.c1, player.c2);
 					float length = std::sqrt(direction.x * direction.x + direction.y * direction.y);
 
 					// Normalizujemy wektor kierunku, aby uzyskaæ wektor jednostkowy
@@ -156,8 +156,7 @@ void Engine::run() {
 					}
 
 					// Obliczamy punkt na obwodzie okrêgu, który bêdzie punktem pocz¹tkowym przemieszczenia
-					Point2D startPoint(circle.c1, circle.c2, direction, 5.0f);
-					//startPoints.push_back(Point2D(circle.c1, circle.c2, direction, 5.0f));
+					Bullet startPoint(player.c1, player.c2, direction, 5.0f);
 
 					// Dopóki punkt jest na ekranie, przesuwamy go w kierunku klikniêcia
 					while (window.isOpen() && startPoint.getPoint().x >= 0 && startPoint.getPoint().x <= width && startPoint.getPoint().y >= 0 && startPoint.getPoint().y <= height) {
@@ -169,14 +168,27 @@ void Engine::run() {
 
 						// Rysujemy wszystkie elementy
 						newLine.drawLine(50, 40, 400, 100, window, sf::Color::Red);
-						circle.drawCircle(50, window, sf::Color::Magenta);
+						circle.drawCircle(70, 70, 50, window, sf::Color::Magenta);
 						rectangle.drawRectangle(vertices, window, sf::Color::Red);
 						elipse.drawElipse(400, 300, 100, 50, window, sf::Color::Yellow);
-						//ptk.setPoint(100, 380);
-						//ptk.drawPoint(ptk, window, sf::Color::Cyan);
+						player.drawPlayer(30, window, sf::Color::Blue);
+						ptk.setPoint(100, 380);
+						ptk.drawPoint(ptk, window, sf::Color::Cyan);
 
 						// Rysujemy punkt
 						startPoint.drawPoint(startPoint, window, sf::Color::Red);
+
+						// wczytywanie bitmapy z pliku
+						zaladujBitmape("bitmapa.png");
+
+						// zapisywanie bitmapy do pliku
+						zapiszBitmape("nowa_bitmapa.png");
+
+						// kopiowanie fragmentu bitmapy z silnika do samego siebie
+						// skopiujBitmapyZSilnika(100, 100, 200, 200);
+
+						// rysowanie bitmapy na ekranie
+						bitmapa.rysujNaRenderWindow(window, 300, 300);
 
 						// Wyœwietlamy wszystkie elementy
 						window.display();
@@ -232,12 +244,12 @@ void Engine::run() {
 		window.setVerticalSyncEnabled(true);
 
 		newLine.drawLine(50, 40, 400, 100,window, sf::Color::Red);
-		circle.drawCircle(50, window, sf::Color::Magenta);
+		circle.drawCircle(70, 70, 50, window, sf::Color::Magenta);
 		rectangle.drawRectangle(vertices, window, sf::Color::Red);
 		elipse.drawElipse(400, 300, 100, 50, window, sf::Color::Yellow);
-		//ptk.setPoint(100, 380);
-		//ptk.drawPoint(ptk, window, sf::Color::Cyan);
-		//newPoint.drawPoint(newPoint, window, sf::Color::Red);
+		player.drawPlayer(30, window, sf::Color::Blue);
+		ptk.setPoint(100, 380);
+		ptk.drawPoint(ptk, window, sf::Color::Cyan);
 
 		// wczytywanie bitmapy z pliku
 		zaladujBitmape("bitmapa.png");

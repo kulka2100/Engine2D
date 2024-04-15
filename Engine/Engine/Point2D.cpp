@@ -13,8 +13,3 @@ void Point2D::drawPoint(Point2D& ptk, sf::RenderWindow& window, sf::Color color)
 	points[0].color = color;
 	window.draw(points);
 }
-
-void Point2D::update() {
-	point.x += direction.x * speed;
-	point.y += direction.y * speed;
-}

@@ -9,25 +9,10 @@
 #include "Engine.h"
 
 
-PrimitiveRenderer::PrimitiveRenderer() : c1(70), c2(70) {
+PrimitiveRenderer::PrimitiveRenderer() : c1(400), c2(700) {
 	
 }
 
-//int PrimitiveRenderer::getPositionX() {
-//	return c1;
-//}
-//
-//int PrimitiveRenderer::getPositionY() {
-//	return c2;
-//}
-//
-//void PrimitiveRenderer::setPositionX(int x) {
-//	c1 = x;
-//}
-//
-//void PrimitiveRenderer::setPositionY(int y) {
-//	c2 = y;
-//}
 
 
 void PrimitiveRenderer:: drawLine(int x0, int y0, int x1, int y1, sf::RenderWindow& window, sf::Color color) {
@@ -68,7 +53,46 @@ void PrimitiveRenderer:: drawLine(int x0, int y0, int x1, int y1, sf::RenderWind
 
 
 // Algorytm rysowania okregu - osmiokrotna symetria
-void PrimitiveRenderer::drawCircle(int r, sf::RenderWindow& window, sf::Color color) {
+void PrimitiveRenderer::drawCircle(int xc, int yc, int r, sf::RenderWindow& window, sf::Color color) {
+	int x = 0;
+	int y = r;
+	int p = 3 - (2 * r);
+	int vertexIndex = 0;
+	sf::VertexArray circ(sf::Points, r * 8);
+
+	//Dopoki nie narysujemy 1/8 czesci okregu
+	while (x <= y) {
+		//Rysowanie 8 pikseli na ekranie korzystajac z symetrii okregu
+		circ[vertexIndex++].position = sf::Vector2f(xc + x, yc + y);
+		circ[vertexIndex++].position = sf::Vector2f(xc - x, yc + y);
+		circ[vertexIndex++].position = sf::Vector2f(xc + x, yc - y);
+		circ[vertexIndex++].position = sf::Vector2f(xc - x, yc - y);
+		circ[vertexIndex++].position = sf::Vector2f(xc + y, yc + x);
+		circ[vertexIndex++].position = sf::Vector2f(xc - y, yc + x);
+		circ[vertexIndex++].position = sf::Vector2f(xc + y, yc - x);
+		circ[vertexIndex++].position = sf::Vector2f(xc - y, yc - x);
+
+		x++;
+		//jesli p <= 0, punkt znajduje sie wewnatrz okregu, zwiekszamy wtedy x, y pozostaje bez zmian
+		if (p <= 0) {
+			p += 4 * x + 6;
+		}
+		// W przeciwnym wypadku punkt lezy na zewnatrz, zmniejszamy wtedy y i zwiekszamy x
+		else {
+			p += 4 * (x - y) + 10;
+			y--;
+		}
+	}
+
+	for (int i = 0; i < circ.getVertexCount(); ++i) {
+		circ[i].color = color;
+	}	
+	window.draw(circ);
+
+}
+
+// Algorytm rysowania okregu - osmiokrotna symetria
+void PrimitiveRenderer::drawPlayer(int r, sf::RenderWindow& window, sf::Color color) {
 	int x = 0;
 	int y = r;
 	int p = 3 - (2 * r);
@@ -103,7 +127,7 @@ void PrimitiveRenderer::drawCircle(int r, sf::RenderWindow& window, sf::Color co
 
 	for (int i = 0; i < circ.getVertexCount(); ++i) {
 		circ[i].color = color;
-	}	
+	}
 	window.draw(circ);
 
 }
