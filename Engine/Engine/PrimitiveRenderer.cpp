@@ -10,10 +10,23 @@
 #include <stack>
 
 
-PrimitiveRenderer::PrimitiveRenderer() : c1(400), c2(700) {
-	
-}
+PrimitiveRenderer::PrimitiveRenderer() : ShapeObject(), c1(400), c2(700) {}
 
+void PrimitiveRenderer::draw(sf::RenderWindow& window, sf::Color color) {
+	// Rysowanie linii
+	drawLine(100, 100, 200, 200, window, color);
+
+	// Rysowanie okregu
+	drawCircle(300, 300, 50, window, color);
+
+	// Rysowanie elipsy
+	drawElipse(400, 400, 60, 30, window, color);
+
+	// Rysowanie prostokata
+	std::vector<sf::Vector2f> rectangleVertices = { {500, 500}, {600, 500}, {600, 600}, {500, 600} };
+	drawPolygon(rectangleVertices, window, color);
+
+}
 
 
 void PrimitiveRenderer::putPixel(float x, float y, sf::RenderWindow& window, sf::Color color) {
@@ -44,6 +57,7 @@ sf::Color PrimitiveRenderer::getPixel(sf::Vector2i pixelPos, sf::RenderWindow& w
 	// Pobierz kolor piksela na podanych wspó³rzêdnych
 	return pixelColor;
 }
+
 
 
 

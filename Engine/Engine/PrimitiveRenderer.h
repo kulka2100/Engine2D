@@ -8,9 +8,10 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include "Point2d.h"
+#include "ShapeObject.h"
 
 
-class PrimitiveRenderer {
+class PrimitiveRenderer : public ShapeObject {
 
 public:
 	PrimitiveRenderer();
@@ -34,8 +35,10 @@ public:
 	void drawPlayer(int r, sf::RenderWindow& window, sf::Color color);
 
 	void move(float x, float y);
+
+	void draw(sf::RenderWindow& window, sf::Color color) override;
 	
-	//Rysowanie lamanych linii
+	//Rysowanie lamanych linii - otwartych lub zamknietych
 	void drawBrokenLine(std::vector<Point2D>& points, sf::RenderWindow& window, sf::Color color, bool closed);
 
 	//Narysowanie wielokata wypelnionego kolorem, algorytm z kontrola parzystosci

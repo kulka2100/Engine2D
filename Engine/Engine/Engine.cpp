@@ -252,7 +252,7 @@ void Engine::run() {
 		window.setVerticalSyncEnabled(true);
 
 		newLine.drawLine(50, 40, 400, 100,window, sf::Color::Red);
-		newLine.drawBrokenLine(verticesPoint2d, window, sf::Color::Yellow, true);
+		newLine.drawBrokenLine(verticesPoint2d, window, sf::Color::Yellow, false);
 		circle.drawCircle(70, 70, 50, window, sf::Color::Magenta);
 		//rectangle.drawPolygon(vertices, window, sf::Color::Red);
 		elipse.drawElipse(400, 300, 100, 50, window, sf::Color::Yellow);
