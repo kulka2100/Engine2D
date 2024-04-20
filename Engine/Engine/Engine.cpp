@@ -81,6 +81,7 @@ void Engine::run() {
 	PrimitiveRenderer elipse;
 	PrimitiveRenderer player;
 	Point2D ptk(700, 400);
+	Point2D ptk2(600, 400);
 	bool bgWhite = true;
 
 	std::vector<sf::Vector2f> vertices = {
@@ -173,7 +174,9 @@ void Engine::run() {
 						elipse.drawElipse(400, 300, 100, 50, window, sf::Color::Yellow);
 						player.drawPlayer(30, window, sf::Color::Blue);
 						ptk.setPoint(100, 380);
+						ptk2.setPoint(150, 200);
 						ptk.drawPoint(ptk, window, sf::Color::Cyan);
+						ptk2.draw(window, sf::Color::Blue);
 
 						// Rysujemy punkt
 						startPoint.drawPoint(startPoint, window, sf::Color::Red);
@@ -249,7 +252,9 @@ void Engine::run() {
 		elipse.drawElipse(400, 300, 100, 50, window, sf::Color::Yellow);
 		player.drawPlayer(30, window, sf::Color::Blue);
 		ptk.setPoint(100, 380);
+		ptk2.setPoint(150, 200);
 		ptk.drawPoint(ptk, window, sf::Color::Cyan);
+		ptk2.draw(window, sf::Color::Blue);
 
 		// wczytywanie bitmapy z pliku
 		zaladujBitmape("bitmapa.png");
