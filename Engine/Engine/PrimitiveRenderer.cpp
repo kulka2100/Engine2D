@@ -7,11 +7,44 @@
 #include <SFML/System/Clock.hpp>
 #include <SFML/System/Sleep.hpp>
 #include "Engine.h"
+#include <stack>
 
 
 PrimitiveRenderer::PrimitiveRenderer() : c1(400), c2(700) {
 	
 }
+
+
+
+void PrimitiveRenderer::putPixel(float x, float y, sf::RenderWindow& window, sf::Color color) {
+	sf::VertexArray points(sf::Points);
+
+	points.append(sf::Vector2f(x, y));
+	points[0].color = color;
+	window.draw(points);
+}
+
+
+
+sf::Color PrimitiveRenderer::getPixel(sf::Vector2i pixelPos, sf::RenderWindow& window) {
+	sf::Texture texture;
+	texture.create(window.getSize().x, window.getSize().y);
+	texture.update(window);
+
+	// Utwórz obraz na podstawie tekstury
+	sf::Image image = texture.copyToImage();
+
+	sf::Color pixelColor = image.getPixel(pixelPos.x, pixelPos.y);
+
+	// Wyœwietl pobrany kolor w konsoli
+	std::cout << "Pobrany kolor piksela (" << pixelPos.x << ", " << pixelPos.y << "): R="
+		<< static_cast<int>(pixelColor.r) << ", G=" << static_cast<int>(pixelColor.g)
+		<< ", B=" << static_cast<int>(pixelColor.b) << std::endl;
+
+	// Pobierz kolor piksela na podanych wspó³rzêdnych
+	return pixelColor;
+}
+
 
 
 
@@ -161,26 +194,22 @@ void PrimitiveRenderer::drawElipse(int xc, int yc, int a, int b, sf::RenderWindo
 
 
 //Rysowanie prostokatow
-void PrimitiveRenderer::drawRectangle(std::vector<sf::Vector2f>& vertices, sf::RenderWindow& window, sf::Color color) {
-	sf::VertexArray rectangle(sf::Points, 4);
-	//nowa tablica do ustawienia koloru rysowanych linii
-	sf::VertexArray outline(sf::LinesStrip, 5);
+void PrimitiveRenderer::drawPolygon(std::vector<sf::Vector2f>& vertices, sf::RenderWindow& window, sf::Color color) {
+	sf::VertexArray outline(sf::LinesStrip);
 
-	if (vertices.size() == 4)
-		for (size_t i = 0; i < 4; i++)
-			rectangle[i].position = vertices[i];
-	//
-	outline[0].position = rectangle[0].position;
-	outline[1].position = rectangle[1].position;
-	outline[2].position = rectangle[2].position;
-	outline[3].position = rectangle[3].position;
-	outline[4].position = rectangle[0].position;
 
-	for (int i = 0; i < 5; ++i) {
+	for (size_t i = 0; i < vertices.size(); i++) {
+		outline.append(vertices[i]);
+	}
+
+	outline.append(vertices[0]);
+
+	for (int i = 0; i < outline.getVertexCount(); ++i) {
 		outline[i].color = color;
 	}
 
 	window.draw(outline);
+
 }
 
 void PrimitiveRenderer::move(float x, float y) {
@@ -188,3 +217,100 @@ void PrimitiveRenderer::move(float x, float y) {
 	c2 += y;
 }
 
+
+
+void PrimitiveRenderer::drawBrokenLine(std::vector<Point2D>& points, sf::RenderWindow& window, sf::Color color, bool closed) {
+	sf::VertexArray lines(sf::LinesStrip);
+
+	for (size_t i = 0; i < points.size(); i++) {
+		lines.append(sf::Vertex(points[i].getPoint(), color));
+	}
+
+	if (closed && points.size() > 0) {
+		lines.append(lines[0]);
+	}
+	window.draw(lines);
+}
+
+void PrimitiveRenderer::filledPolygon(const std::vector<sf::Vector2f>& vertices, sf::RenderWindow& window, sf::Color fillColor) {
+	// Znajd  najni szy i najwy szy punkt wielok ta
+	float minY = vertices[0].y, maxY = vertices[0].y;
+	for (size_t i = 1; i < vertices.size(); ++i) {
+		if (vertices[i].y < minY) minY = vertices[i].y;
+		if (vertices[i].y > maxY) maxY = vertices[i].y;
+	}
+
+	// Przejd  przez ka d  lini  skanuj c 
+	for (int y = static_cast<int>(minY); y <= static_cast<int>(maxY); ++y) {
+		std::vector<float> intersections;
+
+		// Znajd  punkty przeci cia z kraw dziami wielok ta
+		for (size_t i = 0; i < vertices.size(); ++i) {
+			size_t next = (i + 1) % vertices.size();
+			float y1 = vertices[i].y, y2 = vertices[next].y;
+			if ((y1 <= y && y < y2) || (y2 <= y && y < y1)) {
+				float x = vertices[i].x + (y - y1) * (vertices[next].x - vertices[i].x) / (y2 - y1);
+				intersections.push_back(x);
+			}
+		}
+
+		// Sortuj punkty przeci cia
+		std::sort(intersections.begin(), intersections.end());
+
+		// Rysuj linie mi dzy parami punkt w przeci cia
+		for (size_t i = 0; i < intersections.size(); i += 2) {
+			int x1 = static_cast<int>(intersections[i]);
+			int x2 = static_cast<int>(intersections[i + 1]);
+			for (int x = x1; x <= x2; ++x) {
+				putPixel(x, y, window, fillColor);
+			}
+		}
+	}
+}
+
+//Nie do konca dziala
+ void PrimitiveRenderer::floodFill(const sf::Vector2f& startPoint, sf::RenderWindow& window, sf::Color fillColor, sf::Color backgroundColor) {
+	//Utworz stos
+	std::stack<sf::Vector2i> pixelStack;
+
+
+	std::vector<std::vector<bool>> visitedPixels(window.getSize().x, std::vector<bool>(window.getSize().y, false));
+
+	sf::Vector2u windowSize = window.getSize();
+
+	if (startPoint.x < 0 || startPoint.x >= windowSize.x || startPoint.y < 0 || startPoint.y >= windowSize.y) {
+		return;
+	}
+
+	//Wyswietl pixel a nastepnie zapisz go na stosie
+	putPixel(startPoint.x, startPoint.y, window, fillColor);
+	pixelStack.push(sf::Vector2i(static_cast<int>(startPoint.x), static_cast<int>(startPoint.y)));
+
+
+	while (!pixelStack.empty()) {
+		//Zapisz ostatni element ze stosu w zmiennej pixel, a nastepnie zdejmij ten element ze stosu
+		sf::Vector2i pixel = pixelStack.top();
+		pixelStack.pop();
+
+		if (!visitedPixels[pixel.x][pixel.y]) {
+
+			visitedPixels[pixel.x][pixel.y] = true;
+
+
+			// pobranie koloru akutalnego pixela
+		sf::Color currentColor = getPixel(pixel, window);
+
+		//Jesli pixel ze stosu jest taki sam jak ten ekranie zamien kolor
+		if (currentColor == backgroundColor) {
+			putPixel(pixel.x, pixel.y, window, fillColor);
+			//Umiesc 4 sasiadow tego pixela na stosie
+			pixelStack.push(sf::Vector2i(pixel.x + 1, pixel.y));
+			pixelStack.push(sf::Vector2i(pixel.x - 1, pixel.y));
+			pixelStack.push(sf::Vector2i(pixel.x, pixel.y + 1));
+			pixelStack.push(sf::Vector2i(pixel.x, pixel.y - 1));
+
+			}
+		}
+	}
+
+}

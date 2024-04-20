@@ -7,7 +7,6 @@
 #include <SFML/Window/Event.hpp>
 #include <SFML/System/Clock.hpp>
 #include <iostream>
-#include "PrimitiveRenderer.h"
 #include "ShapeObject.h"
 
 
@@ -21,6 +20,11 @@ protected:
 public:
 	Point2D() : ShapeObject(), point(0.0f, 0.0f) {}
 	Point2D(float x, float y) : ShapeObject(), point(x, y) {}
+
+	Point2D(sf::Vector2f point) {
+		this->point = point;
+	}
+
 
 	void setPoint(float x, float y);
 

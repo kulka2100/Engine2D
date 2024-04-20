@@ -91,6 +91,11 @@ void Engine::run() {
 		sf::Vector2f(100, 150)
 	};
 
+	std::vector<Point2D> verticesPoint2d = {
+		sf::Vector2f(200, 200),
+		sf::Vector2f(400, 200),
+		sf::Vector2f(300, 300),
+	};
 
 	sf::Clock clock;
 
@@ -170,7 +175,7 @@ void Engine::run() {
 						// Rysujemy wszystkie elementy
 						newLine.drawLine(50, 40, 400, 100, window, sf::Color::Red);
 						circle.drawCircle(70, 70, 50, window, sf::Color::Magenta);
-						rectangle.drawRectangle(vertices, window, sf::Color::Red);
+						rectangle.drawPolygon(vertices, window, sf::Color::Red);
 						elipse.drawElipse(400, 300, 100, 50, window, sf::Color::Yellow);
 						player.drawPlayer(30, window, sf::Color::Blue);
 						ptk.setPoint(100, 380);
@@ -247,9 +252,11 @@ void Engine::run() {
 		window.setVerticalSyncEnabled(true);
 
 		newLine.drawLine(50, 40, 400, 100,window, sf::Color::Red);
+		newLine.drawBrokenLine(verticesPoint2d, window, sf::Color::Yellow, true);
 		circle.drawCircle(70, 70, 50, window, sf::Color::Magenta);
-		rectangle.drawRectangle(vertices, window, sf::Color::Red);
+		//rectangle.drawPolygon(vertices, window, sf::Color::Red);
 		elipse.drawElipse(400, 300, 100, 50, window, sf::Color::Yellow);
+		rectangle.filledPolygon(vertices, window, sf::Color::Green);
 		player.drawPlayer(30, window, sf::Color::Blue);
 		ptk.setPoint(100, 380);
 		ptk2.setPoint(150, 200);
