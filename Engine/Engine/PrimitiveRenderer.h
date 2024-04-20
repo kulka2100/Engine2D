@@ -7,15 +7,18 @@
 #include <SFML/System/Clock.hpp>
 #include <SFML/Graphics.hpp>
 #include <iostream>
+#include "ShapeObject.h"
 
 
-class PrimitiveRenderer {
+class PrimitiveRenderer : public ShapeObject {
 
 public:
 	PrimitiveRenderer();
 	float c1, c2;
 
 	void drawLine(int x0, int y0, int x1, int y1, sf::RenderWindow& window, sf::Color color);
+
+	void draw(sf::RenderWindow& window, sf::Color color) override;
 
 	// Algorytm rysowania okregu - osmiokrotna symetria
 	void drawCircle(int xc, int yc, int r, sf::RenderWindow& window, sf::Color color);

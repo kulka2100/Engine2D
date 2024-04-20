@@ -1,14 +1,15 @@
 #pragma once
 #include "Point2D.h"
+#include "ShapeObject.h"
 
-class LineSegment
+class LineSegment : public ShapeObject
 {
 private:
 	Point2D a, b;
 	int x0, y0, x1, y1;
 
 public:
-	LineSegment(Point2D& a, Point2D& b) {
+	LineSegment(Point2D& a, Point2D& b) : ShapeObject() {
 		this->a = a;
 		this->b = b;
 	}
@@ -17,7 +18,7 @@ public:
 		return std::make_pair(a, b);
 	}
 
-	LineSegment(int x0, int y0, int x1, int y1) {
+	LineSegment(int x0, int y0, int x1, int y1) : ShapeObject() {
 		this->x0 = x0;
 		this->y0 = y0;
 		this->x1 = x1;

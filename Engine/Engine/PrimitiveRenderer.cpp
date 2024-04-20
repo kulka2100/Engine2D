@@ -9,11 +9,22 @@
 #include "Engine.h"
 
 
-PrimitiveRenderer::PrimitiveRenderer() : c1(400), c2(700) {
-	
+PrimitiveRenderer::PrimitiveRenderer() : ShapeObject(), c1(400), c2(700) {}
+
+void PrimitiveRenderer::draw(sf::RenderWindow& window, sf::Color color) {
+	// Rysowanie linii
+	drawLine(100, 100, 200, 200, window, color);
+
+	// Rysowanie okrêgu
+	drawCircle(300, 300, 50, window, color);
+
+	// Rysowanie elipsy
+	drawElipse(400, 400, 60, 30, window, color);
+
+	// Rysowanie prostok¹ta
+	std::vector<sf::Vector2f> rectangleVertices = { {500, 500}, {600, 500}, {600, 600}, {500, 600} };
+	drawRectangle(rectangleVertices, window, color);
 }
-
-
 
 void PrimitiveRenderer:: drawLine(int x0, int y0, int x1, int y1, sf::RenderWindow& window, sf::Color color) {
 	// Tablica wierzcholkow reprezentujacych linie
