@@ -94,7 +94,9 @@ void Engine::run() {
 	std::vector<Point2D> verticesPoint2d = {
 		sf::Vector2f(200, 200),
 		sf::Vector2f(400, 200),
-		sf::Vector2f(300, 300),
+		sf::Vector2f(295, 103),
+		sf::Vector2f(235, 103),
+		sf::Vector2f(295, 163),
 	};
 
 	sf::Clock clock;
@@ -153,6 +155,7 @@ void Engine::run() {
 			if (event.type == sf::Event::MouseButtonPressed) {
 				if (event.mouseButton.button == sf::Mouse::Left) {
 					sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
+					std::cout << "Mouse x " << mousePosition.x << " " << ", Mouse y " << mousePosition.y << std::endl;
 					sf::Vector2f direction = sf::Vector2f(mousePosition) - sf::Vector2f(player.c1, player.c2);
 					float length = std::sqrt(direction.x * direction.x + direction.y * direction.y);
 
@@ -180,11 +183,11 @@ void Engine::run() {
 						player.drawPlayer(30, window, sf::Color::Blue);
 						ptk.setPoint(100, 380);
 						ptk2.setPoint(150, 200);
-						ptk.drawPoint(ptk, window, sf::Color::Cyan);
+						ptk.draw(window, sf::Color::Cyan);
 						ptk2.draw(window, sf::Color::Blue);
 
 						// Rysujemy punkt
-						startPoint.drawPoint(startPoint, window, sf::Color::Red);
+						startPoint.draw(window, sf::Color::Red);
 
 						// wczytywanie bitmapy z pliku
 						zaladujBitmape("bitmapa.png");
@@ -251,16 +254,18 @@ void Engine::run() {
 		// Wylczenie synchronizacji pionowej
 		window.setVerticalSyncEnabled(true);
 
-		newLine.drawLine(50, 40, 400, 100,window, sf::Color::Red);
-		newLine.drawBrokenLine(verticesPoint2d, window, sf::Color::Yellow, false);
-		circle.drawCircle(70, 70, 50, window, sf::Color::Magenta);
+		//newLine.drawLine(50, 40, 400, 100,window, sf::Color::Red);
+		//newLine.drawBrokenLine(verticesPoint2d, window, sf::Color::Yellow, false);
+		//circle.drawCircle(70, 70, 50, window, sf::Color::Magenta);
 		//rectangle.drawPolygon(vertices, window, sf::Color::Red);
-		elipse.drawElipse(400, 300, 100, 50, window, sf::Color::Yellow);
-		rectangle.filledPolygon(vertices, window, sf::Color::Green);
+		rectangle.drawSimplePolygon(verticesPoint2d, window, sf::Color::Magenta);
+
+		//elipse.drawElipse(400, 300, 100, 50, window, sf::Color::Yellow);
+		//rectangle.filledPolygon(vertices, window, sf::Color::Green);
 		player.drawPlayer(30, window, sf::Color::Blue);
 		ptk.setPoint(100, 380);
 		ptk2.setPoint(150, 200);
-		ptk.drawPoint(ptk, window, sf::Color::Cyan);
+		ptk.draw(window, sf::Color::Cyan);
 		ptk2.draw(window, sf::Color::Blue);
 
 		// wczytywanie bitmapy z pliku

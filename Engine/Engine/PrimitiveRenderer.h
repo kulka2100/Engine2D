@@ -47,5 +47,17 @@ public:
 	//Algorytm floodFill. mam problem jak go zastosowac w kodzie
 	static void floodFill(const sf::Vector2f& startPoint, sf::RenderWindow& window, sf::Color fillColor, sf::Color backgroundColor);
 
+
+	void drawSimplePolygon(std::vector<Point2D> vertices, sf::RenderWindow& window, sf::Color color);
+
+	// Funkcja do sprawdzania przeciêcia odcinków
+	static bool segmentsIntersect(sf::Vector2f p1, sf::Vector2f p2, sf::Vector2f q1, sf::Vector2f q2);
+
+	// Funkcja pomocnicza do obliczania orientacji
+	static float orientation(sf::Vector2f p, sf::Vector2f q, sf::Vector2f r);
+
+
+
+
 };
 

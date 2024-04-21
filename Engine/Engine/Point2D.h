@@ -10,6 +10,7 @@
 #include "ShapeObject.h"
 
 
+
 class Point2D : public ShapeObject
 {
 protected:
@@ -29,12 +30,12 @@ public:
 	void setPoint(float x, float y);
 
 
-	sf::Vector2f getPoint() {
+	sf::Vector2f getPoint() const{
 		return point;
 	}
 
 	void draw(sf::RenderWindow& window, sf::Color color) override;
 
-	void drawPoint(Point2D& ptk, sf::RenderWindow& window, sf::Color color);
+
 };
 
