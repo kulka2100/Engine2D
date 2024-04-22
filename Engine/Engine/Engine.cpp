@@ -169,48 +169,6 @@ void Engine::run() {
 				window.close();
 			} 
 
-			// Ustawienie ekranu na rozdzielczosc 800x600 skrotem ALT+R
-			if (event.type == sf::Event::KeyPressed) {
-				if (((event.key.code == sf::Keyboard::R) && (event.key.alt)) || (event.key.code == sf::Keyboard::Escape)) {
-					if (fullscreen) {
-						setFullscreen(false);
-						setWindowSize(800, 600);
-					}
-					else {
-						setWindowSize(800, 600);
-					}
-				}
-			}
-
-			// Obs�uga strza�ek na klawiaturze, kt�re przesuwaj� nasz obiekt rect
-			if (event.type == sf::Event::KeyPressed) {
-				if (event.key.code == sf::Keyboard::Left) {
-					player.move(-5.f, 0.f);
-					moveCounter++;
-				}
-				else if (event.key.code == sf::Keyboard::Right) {
-					player.move(5.f, 0.f);
-					moveCounter++;
-				}
-				else if (event.key.code == sf::Keyboard::Up) {
-					player.move(0.f, -5.f);
-					moveCounter++;
-				}
-				else if (event.key.code == sf::Keyboard::Down) {
-					player.move(0.f, 5.f);
-					moveCounter++;
-				}
-			}
-
-			
-
-			// Ustawienie pelnego ekranu skrotem ALT+F (F-fullscreen)
-			if (event.type == sf::Event::KeyPressed) {
-				if ((event.key.code == sf::Keyboard::F) && (event.key.alt)) {
-					setFullscreen(true);
-				}
-			}
-
 			if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
 				sf::Vector2f mousePosition = window.mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y));
 				if (toolPanel.getGlobalBounds().contains(mousePosition)) {
@@ -223,19 +181,18 @@ void Engine::run() {
 					isScaleBut = false;
 					isGameOn = false;
 					if (moveButton.getGlobalBounds().contains(mousePosition)) {
-						moveButton.setFillColor(sf::Color(100, 100, 100)); 
+						moveButton.setFillColor(sf::Color(100, 100, 100));
 						isMoveBut = true;
 					}
 					else if (rotateButton.getGlobalBounds().contains(mousePosition)) {
-						rotateButton.setFillColor(sf::Color(100, 100, 100)); 
+						rotateButton.setFillColor(sf::Color(100, 100, 100));
 						isRotateBut = true;
 					}
 					else if (scaleButton.getGlobalBounds().contains(mousePosition)) {
-						scaleButton.setFillColor(sf::Color(100, 100, 100)); 
+						scaleButton.setFillColor(sf::Color(100, 100, 100));
 						isScaleBut = true;
 					}
 					else if (playButton.getGlobalBounds().contains(mousePosition)) {
-						playButton.setFillColor(sf::Color(100, 100, 100));
 						isGameOn = true;
 					}
 				}
@@ -259,7 +216,41 @@ void Engine::run() {
 					std::cin >> temp_factor;
 					player.scale(temp_factor);
 				}
-				else if (isGameOn == true) {
+			}
+			if (isGameOn == true) {
+				if (!fullscreen) {
+					setFullscreen(true);
+				}
+
+				// Ustawienie ekranu na rozdzielczosc 800x600 skrotem ALT+R
+				if (event.type == sf::Event::KeyPressed) {
+					if (event.key.code == sf::Keyboard::Escape) {
+						setFullscreen(false);
+						setWindowSize(800, 600);
+						isGameOn = false;
+					}
+				}
+
+				// Obs�uga strza�ek na klawiaturze, kt�re przesuwaj� nasz obiekt rect
+				if (event.type == sf::Event::KeyPressed) {
+					if (event.key.code == sf::Keyboard::Left) {
+						player.move(-5.f, 0.f);
+						moveCounter++;
+					}
+					else if (event.key.code == sf::Keyboard::Right) {
+						player.move(5.f, 0.f);
+						moveCounter++;
+					}
+					else if (event.key.code == sf::Keyboard::Up) {
+						player.move(0.f, -5.f);
+						moveCounter++;
+					}
+					else if (event.key.code == sf::Keyboard::Down) {
+						player.move(0.f, 5.f);
+						moveCounter++;
+					}
+				}
+				if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
 					sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
 					sf::Vector2f direction = sf::Vector2f(mousePosition) - sf::Vector2f(player.GameObject::getX(), player.GameObject::getY());
 					float length = std::sqrt(direction.x * direction.x + direction.y * direction.y);
@@ -273,26 +264,17 @@ void Engine::run() {
 					Bullet startPoint(player.GameObject::getX(), player.GameObject::getY(), direction, 5.0f);
 
 					// Dop�ki punkt jest na ekranie, przesuwamy go w kierunku klikni�cia
-					while (window.isOpen() && startPoint.getPoint().x >= 0 && startPoint.getPoint().x <= width && startPoint.getPoint().y >= 0 && startPoint.getPoint().y <= height) {
+					while (startPoint.getPoint().x >= 0 && startPoint.getPoint().x <= width && startPoint.getPoint().y >= 0 && startPoint.getPoint().y <= height) {
 						// Aktualizujemy po�o�enie punktu
 						startPoint.update();
 
-						
+
 
 						// Czy�cimy ekran do wylosowanego koloru
 						window.clear(bgColor);
 						// Wylczenie synchronizacji pionowej
 						window.setVerticalSyncEnabled(true);
 
-						window.draw(toolPanel);
-						window.draw(moveButton);
-						window.draw(moveButTexture);
-						window.draw(rotateButton);
-						window.draw(rotateButTexture);
-						window.draw(scaleButton);
-						window.draw(scaleButTexture);
-						window.draw(playButton);
-						window.draw(playButTexture);
 						//window.draw(moveText);
 						//newLine.drawLine(50, 40, 400, 100,window, sf::Color::Red);
 						//newLine.drawBrokenLine(verticesPoint2d, window, sf::Color::Yellow, false);
@@ -315,7 +297,7 @@ void Engine::run() {
 						zaladujBitmape("bitmapa.png");
 
 						// zapisywanie bitmapy do pliku
-						zapiszBitmape("nowa_bitmapa.png");
+						//zapiszBitmape("nowa_bitmapa.png");
 
 						// kopiowanie fragmentu bitmapy z silnika do samego siebie
 						// skopiujBitmapyZSilnika(100, 100, 200, 200);
@@ -363,15 +345,17 @@ void Engine::run() {
 		// Wylczenie synchronizacji pionowej
 		window.setVerticalSyncEnabled(true);
 
-		window.draw(toolPanel);
-		window.draw(moveButton);
-		window.draw(moveButTexture);
-		window.draw(rotateButton);
-		window.draw(rotateButTexture);
-		window.draw(scaleButton);
-		window.draw(scaleButTexture);
-		window.draw(playButton);
-		window.draw(playButTexture);
+		if (!isGameOn) {
+			window.draw(toolPanel);
+			window.draw(moveButton);
+			window.draw(moveButTexture);
+			window.draw(rotateButton);
+			window.draw(rotateButTexture);
+			window.draw(scaleButton);
+			window.draw(scaleButTexture);
+			window.draw(playButton);
+			window.draw(playButTexture);
+		}
 		//window.draw(moveText);
 		//newLine.drawLine(50, 40, 400, 100,window, sf::Color::Red);
 		//newLine.drawBrokenLine(verticesPoint2d, window, sf::Color::Yellow, false);
@@ -392,7 +376,7 @@ void Engine::run() {
 		zaladujBitmape("bitmapa.png");
 
 		// zapisywanie bitmapy do pliku
-		zapiszBitmape("nowa_bitmapa.png");
+		//zapiszBitmape("nowa_bitmapa.png");
 
 		// kopiowanie fragmentu bitmapy z silnika do samego siebie
 		// skopiujBitmapyZSilnika(100, 100, 200, 200);
