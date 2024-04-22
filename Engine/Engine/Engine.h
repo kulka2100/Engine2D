@@ -9,6 +9,8 @@
 #include <SFML/System/Clock.hpp>
 #include "PrimitiveRenderer.h"
 #include "BitmapHandler.h"
+#include "Point2D.h"
+#include "Bullet.h"
 
 class Engine
 {

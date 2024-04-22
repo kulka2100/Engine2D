@@ -32,7 +32,7 @@ public:
 
 	void drawPolygon(std::vector<sf::Vector2f>& vertices, sf::RenderWindow& window, sf::Color color);
 
-	void drawPlayer(int r, sf::RenderWindow& window, sf::Color color);
+	void drawPlayer(int a, int b, sf::RenderWindow& window, sf::Color color);
 
 	void move(float x, float y);
 

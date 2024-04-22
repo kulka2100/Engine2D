@@ -11,6 +11,8 @@ public:
     float getRotation() const;
     void setScale(float factor);
     float getScale() const;
+    float getX() const;
+    float getY() const;
 
 private:
     float go_x;

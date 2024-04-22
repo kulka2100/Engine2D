@@ -1,7 +1,7 @@
 #include "GameObject.h"
 
 GameObject::GameObject()
-    : go_x(0.0f), go_y(0.0f), go_rotation(0.0f), go_scale(1.0f) {}
+    : go_x(200.0f), go_y(200.0f), go_rotation(0.0f), go_scale(1.0f) {}
 
 GameObject::~GameObject() {}
 
@@ -29,4 +29,12 @@ void GameObject::setScale(float factor) {
 
 float GameObject::getScale() const {
     return go_scale;
+}
+
+float GameObject::getX() const {
+    return go_x;
+}
+
+float GameObject::getY() const {
+    return go_y;
 }
