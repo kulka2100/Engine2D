@@ -11,6 +11,8 @@
 #include "BitmapHandler.h"
 #include "Point2D.h"
 #include "Bullet.h"
+#include "AnimationHandler.h"
+
 
 class Engine
 {
@@ -25,7 +27,11 @@ private:
 		// Prywatny konstruktor, aby uniemozliwic tworzenie instancji z zewn�trz. sprawdzenie czy okno zostalo poprawnie zainicjowane
 		Engine(int w, int h, bool fullscreen);
 		// Obiekt do obsługi bitmapy
-		BitmapHandler bitmapa;
+		BitmapHandler bitmapHandler;
+		AnimationHandler animationHandler;
+
+		sf::Texture backgroundTexture;
+		sf::Sprite backgroundSprite;
 
 public:
 	// Metoda zwracajaca instancje singletona, zmienna static Engine inicjalizowana jest tylko raz i istnieje do ko�ca pracy programu
@@ -53,14 +59,31 @@ public:
 	//Metoda ustawiajaca limit klatek na sekunde
 	void setLimit(int limit);
 
-	// Metoda do wczytywania bitmapy z pliku
-	void zaladujBitmape(const std::string& nazwaPliku);
+	void createBitmap(int width, int height) {
+		bitmapHandler.createBitmap(width, height);
+	}
 
-	// Metoda do zapisywania bitmapy do pliku
-	void zapiszBitmape(const std::string& nazwaPliku);
+	void deleteBitmap() {
+		bitmapHandler.deleteBitmap();
+	}
 
-	// Metoda do kopiowania fragmentu bitmapy
-	void skopiujBitmapyZSilnika(int x, int y, int szerokosc, int wysokosc);
+	bool loadBitmapFromFile(const std::string& filename) {
+		return bitmapHandler.loadFromFile(filename);
+	}
+
+	bool saveBitmapToFile(const std::string& filename) {
+		return bitmapHandler.saveToFile(filename);
+	}
+
+	void copyBitmapFrom(const BitmapHandler& other) {
+		bitmapHandler.copyFrom(other);
+	}
+
+	// Metoda wczytująca tło z pliku
+	bool loadBackground(const std::string& filename);
+
+	// Metoda rysująca tło
+	void drawBackground();
 
 	//Glowna petla
 	void run();

@@ -1,22 +1,16 @@
 #pragma once
-#include <SFML/Graphics/Image.hpp>
-#include <SFML/Graphics/Texture.hpp>
-#include <SFML/Graphics.hpp>
+#include <vector>
+#include <string>
 
 class BitmapHandler {
 private:
-    sf::Image obraz;
+    std::vector<std::vector<int>> bitmap;
 
 public:
-    BitmapHandler() {}
-
-    void utworz(int szerokosc, int wysokosc);
-
-    void zaladujZPliku(const std::string& nazwaPliku);
-
-    void zapiszDoPliku(const std::string& nazwaPliku);
-
-    void skopiujZBitmapy(const BitmapHandler& inna, int x, int y, int szerokosc, int wysokosc);
-
-    void rysujNaRenderWindow(sf::RenderWindow& okno, int x, int y);
+    BitmapHandler();
+    void createBitmap(int width, int height);
+    void deleteBitmap();
+    bool loadFromFile(const std::string& filename);
+    bool saveToFile(const std::string& filename);
+    void copyFrom(const BitmapHandler& other);
 };

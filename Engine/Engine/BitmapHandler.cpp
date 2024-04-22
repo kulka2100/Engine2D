@@ -1,32 +1,87 @@
 #include "BitmapHandler.h"
-#include <SFML/Graphics/Sprite.hpp>
-#include <SFML/Graphics/RenderWindow.hpp>
+#include <fstream>
 
-// Funkcja do tworzenia nowego pustego obrazu o okreœlonej szerokoœci i wysokoœci
-void BitmapHandler::utworz(int szerokosc, int wysokosc) {
-    obraz.create(szerokosc, wysokosc, sf::Color::Transparent); // Tworzenie obrazu z przezroczystym kolorem
+// Konstruktor domyœlny klasy BitmapHandler
+BitmapHandler::BitmapHandler() {}
+
+// Funkcja tworz¹ca nowy bitmapê o podanych wymiarach
+void BitmapHandler::createBitmap(int width, int height) {
+    // Zmiana rozmiaru bitmapy na podane wymiary, wype³nienie zerami
+    bitmap.resize(height, std::vector<int>(width, 0));
 }
 
-// Funkcja do wczytywania obrazu z pliku
-void BitmapHandler::zaladujZPliku(const std::string& nazwaPliku) {
-    obraz.loadFromFile(nazwaPliku); // Wczytywanie obrazu z pliku
+// Funkcja usuwaj¹ca zawartoœæ bitmapy
+void BitmapHandler::deleteBitmap() {
+    // Wyczyszczenie wektora bitmapy
+    bitmap.clear();
 }
 
-// Funkcja do zapisywania obrazu do pliku
-void BitmapHandler::zapiszDoPliku(const std::string& nazwaPliku) {
-    obraz.saveToFile(nazwaPliku); // Zapisywanie obrazu do pliku
+// Funkcja wczytuj¹ca bitmapê z pliku o podanej nazwie
+bool BitmapHandler::loadFromFile(const std::string& filename) {
+    // Otwarcie pliku do odczytu
+    std::ifstream file(filename);
+    // Sprawdzenie, czy plik zosta³ otwarty poprawnie
+    if (!file.is_open()) {
+        // Jeœli nie, zwróæ false (b³¹d wczytywania)
+        return false;
+    }
+
+    // Wyczyszczenie aktualnej zawartoœci bitmapy
+    bitmap.clear();
+
+    // Deklaracja zmiennych przechowuj¹cych szerokoœæ i wysokoœæ bitmapy
+    int width, height;
+    // Wczytanie szerokoœci i wysokoœci z pliku
+    file >> width >> height;
+
+    // Zmiana rozmiaru bitmapy na podane wymiary, wype³nienie zerami
+    bitmap.resize(height, std::vector<int>(width, 0));
+
+    // Wczytywanie danych pikseli z pliku do bitmapy
+    for (int y = 0; y < height; ++y) {
+        for (int x = 0; x < width; ++x) {
+            file >> bitmap[y][x];
+        }
+    }
+
+    // Zamkniêcie pliku i zwrócenie true (wczytanie zakoñczone sukcesem)
+    file.close();
+    return true;
 }
 
-// Funkcja do kopiowania czêœci obrazu innego obiektu BitmapHandler na ten obraz
-void BitmapHandler::skopiujZBitmapy(const BitmapHandler& inna, int x, int y, int szerokosc, int wysokosc) {
-    obraz.copy(inna.obraz, x, y, sf::IntRect(0, 0, szerokosc, wysokosc), true); // Kopiowanie obrazu
+// Funkcja zapisuj¹ca bitmapê do pliku o podanej nazwie
+bool BitmapHandler::saveToFile(const std::string& filename) {
+    // Otwarcie pliku do zapisu
+    std::ofstream file(filename);
+    // Sprawdzenie, czy plik zosta³ otwarty poprawnie
+    if (!file.is_open()) {
+        // Jeœli nie, zwróæ false (b³¹d zapisu)
+        return false;
+    }
+
+    // Pobranie szerokoœci i wysokoœci bitmapy
+    int width = bitmap[0].size();
+    int height = bitmap.size();
+
+    // Zapisanie szerokoœci i wysokoœci do pliku
+    file << width << " " << height << std::endl;
+
+    // Zapisanie danych pikseli do pliku
+    for (int y = 0; y < height; ++y) {
+        for (int x = 0; x < width; ++x) {
+            file << bitmap[y][x] << " ";
+        }
+        // Zakoñczenie linii po zapisaniu wszystkich pikseli w wierszu
+        file << std::endl;
+    }
+
+    // Zamkniêcie pliku i zwrócenie true (zapis zakoñczony sukcesem)
+    file.close();
+    return true;
 }
 
-// Funkcja do rysowania obrazu na obiekcie RenderWindow w okreœlonej pozycji
-void BitmapHandler::rysujNaRenderWindow(sf::RenderWindow& okno, int x, int y) {
-    sf::Texture tekstura;
-    tekstura.loadFromImage(obraz); // Wczytywanie tekstury z obrazu
-    sf::Sprite sprite(tekstura);
-    sprite.setPosition(x, y);
-    okno.draw(sprite); // Rysowanie sprite'a na oknie
+// Funkcja kopiuj¹ca zawartoœæ bitmapy z innej bitmapy
+void BitmapHandler::copyFrom(const BitmapHandler& other) {
+    // Przypisanie zawartoœci bitmapy z innej bitmapy
+    bitmap = other.bitmap;
 }
