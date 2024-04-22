@@ -82,7 +82,7 @@ void Engine::run() {
 	Point2D ptk2(600, 400);
 	bool bgWhite = true;
 
-	sf::RectangleShape toolPanel(sf::Vector2f(30, 87));
+	sf::RectangleShape toolPanel(sf::Vector2f(30, 111));
 	toolPanel.setFillColor(sf::Color(200, 200, 200));
 	
 	sf::RectangleShape moveButton(sf::Vector2f(24, 24));
@@ -124,8 +124,21 @@ void Engine::run() {
 	scaleButTexture.setPosition(toolPanel.getPosition().x + 4, toolPanel.getPosition().y + 58);
 	scaleButTexture.setScale(22.0f / scaleButTexture.getLocalBounds().width, 22.0f / scaleButTexture.getLocalBounds().height);
 
+	sf::RectangleShape playButton(sf::Vector2f(24, 24));
+	playButton.setFillColor(sf::Color::White);
+	playButton.setOutlineColor(sf::Color::Black);
+	playButton.setOutlineThickness(1);
+	playButton.setPosition(toolPanel.getPosition().x + 3, toolPanel.getPosition().y + 84);
+	sf::Texture playTexture;
+	if (!playTexture.loadFromFile("playButton.png")) {
+		std::cerr << "Nie mo�na za�adowa� obrazka!" << std::endl;
+	}
+	sf::Sprite playButTexture(playTexture);
+	playButTexture.setPosition(toolPanel.getPosition().x + 4, toolPanel.getPosition().y + 85);
+	playButTexture.setScale(22.0f / playButTexture.getLocalBounds().width, 22.0f / playButTexture.getLocalBounds().height);
+
 	// Zmienna przechowujaca informacje, czy wcisniety przycisk do przesuwania figur
-	bool isMoveBut = false, isRotateBut = false, isScaleBut = false;
+	bool isMoveBut = false, isRotateBut = false, isScaleBut = false, isGameOn = false;
 	float temp_x, temp_y, temp_angle, temp_factor;
 
 	std::vector<sf::Vector2f> vertices = {
@@ -189,6 +202,8 @@ void Engine::run() {
 				}
 			}
 
+			
+
 			// Ustawienie pelnego ekranu skrotem ALT+F (F-fullscreen)
 			if (event.type == sf::Event::KeyPressed) {
 				if ((event.key.code == sf::Keyboard::F) && (event.key.alt)) {
@@ -201,8 +216,12 @@ void Engine::run() {
 				if (toolPanel.getGlobalBounds().contains(mousePosition)) {
 					moveButton.setFillColor(sf::Color::White);
 					rotateButton.setFillColor(sf::Color::White);
+					scaleButton.setFillColor(sf::Color::White);
+					playButton.setFillColor(sf::Color::White);
 					isMoveBut = false;
 					isRotateBut = false;
+					isScaleBut = false;
+					isGameOn = false;
 					if (moveButton.getGlobalBounds().contains(mousePosition)) {
 						moveButton.setFillColor(sf::Color(100, 100, 100)); 
 						isMoveBut = true;
@@ -214,6 +233,10 @@ void Engine::run() {
 					else if (scaleButton.getGlobalBounds().contains(mousePosition)) {
 						scaleButton.setFillColor(sf::Color(100, 100, 100)); 
 						isScaleBut = true;
+					}
+					else if (playButton.getGlobalBounds().contains(mousePosition)) {
+						playButton.setFillColor(sf::Color(100, 100, 100));
+						isGameOn = true;
 					}
 				}
 				else if (isMoveBut == true) {
@@ -236,81 +259,78 @@ void Engine::run() {
 					std::cin >> temp_factor;
 					player.scale(temp_factor);
 				}
+				else if (isGameOn == true) {
+					sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
+					sf::Vector2f direction = sf::Vector2f(mousePosition) - sf::Vector2f(player.GameObject::getX(), player.GameObject::getY());
+					float length = std::sqrt(direction.x * direction.x + direction.y * direction.y);
+
+					// Normalizujemy wektor kierunku, aby uzyska� wektor jednostkowy
+					if (length != 0) {
+						direction /= length;
+					}
+
+					// Obliczamy punkt na obwodzie okr�gu, kt�ry b�dzie punktem pocz�tkowym przemieszczenia
+					Bullet startPoint(player.GameObject::getX(), player.GameObject::getY(), direction, 5.0f);
+
+					// Dop�ki punkt jest na ekranie, przesuwamy go w kierunku klikni�cia
+					while (window.isOpen() && startPoint.getPoint().x >= 0 && startPoint.getPoint().x <= width && startPoint.getPoint().y >= 0 && startPoint.getPoint().y <= height) {
+						// Aktualizujemy po�o�enie punktu
+						startPoint.update();
+
+						
+
+						// Czy�cimy ekran do wylosowanego koloru
+						window.clear(bgColor);
+						// Wylczenie synchronizacji pionowej
+						window.setVerticalSyncEnabled(true);
+
+						window.draw(toolPanel);
+						window.draw(moveButton);
+						window.draw(moveButTexture);
+						window.draw(rotateButton);
+						window.draw(rotateButTexture);
+						window.draw(scaleButton);
+						window.draw(scaleButTexture);
+						window.draw(playButton);
+						window.draw(playButTexture);
+						//window.draw(moveText);
+						//newLine.drawLine(50, 40, 400, 100,window, sf::Color::Red);
+						//newLine.drawBrokenLine(verticesPoint2d, window, sf::Color::Yellow, false);
+						//circle.drawCircle(400, 70, 50, window, sf::Color::Magenta);
+						rectangle.drawSimplePolygon(verticesPoint2d, window, sf::Color::Magenta);
+						//rectangle.drawPolygon(vertices, window, sf::Color::Red);
+						//elipse.drawElipse(400, 300, 100, 50, window, sf::Color::Yellow);
+						//rectangle.filledPolygon(vertices, window, sf::Color::Green);
+						player.drawPlayer(50, 30, window, sf::Color::Blue);
+
+						ptk.setPoint(100, 380);
+						ptk2.setPoint(150, 200);
+						ptk.draw(window, sf::Color::Cyan);
+						ptk2.draw(window, sf::Color::Blue);
+
+						// Rysujemy punkt
+						startPoint.draw(window, sf::Color::Red);
+
+						// wczytywanie bitmapy z pliku
+						zaladujBitmape("bitmapa.png");
+
+						// zapisywanie bitmapy do pliku
+						zapiszBitmape("nowa_bitmapa.png");
+
+						// kopiowanie fragmentu bitmapy z silnika do samego siebie
+						// skopiujBitmapyZSilnika(100, 100, 200, 200);
+
+						// rysowanie bitmapy na ekranie
+						bitmapa.rysujNaRenderWindow(window, 300, 300);
+
+						// Wy�wietlamy wszystkie elementy
+						window.display();
+					}
+				}
 			}
 
-			//if (event.type == sf::Event::MouseButtonPressed) {
-			//	if (event.mouseButton.button == sf::Mouse::Left) {
-			//		sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
-			//		sf::Vector2f direction = sf::Vector2f(mousePosition) - sf::Vector2f(player.c1, player.c2);
-			//		float length = std::sqrt(direction.x * direction.x + direction.y * direction.y);
+			
 
-			//		// Normalizujemy wektor kierunku, aby uzyska� wektor jednostkowy
-			//		if (length != 0) {
-			//			direction /= length;
-			//		}
-
-			//		// Obliczamy punkt na obwodzie okr�gu, kt�ry b�dzie punktem pocz�tkowym przemieszczenia
-			//		Bullet startPoint(player.c1, player.c2, direction, 5.0f);
-
-			//		// Dop�ki punkt jest na ekranie, przesuwamy go w kierunku klikni�cia
-			//		while (window.isOpen() && startPoint.getPoint().x >= 0 && startPoint.getPoint().x <= width && startPoint.getPoint().y >= 0 && startPoint.getPoint().y <= height) {
-			//			// Aktualizujemy po�o�enie punktu
-			//			startPoint.update();
-
-			//			// Czyscimy ekran
-			//			window.clear(bgColor);
-
-			//			// Rysujemy wszystkie elementy
-			//			window.draw(toolPanel);
-			//			window.draw(moveButton);
-			//			window.draw(moveButTexture);
-			//			window.draw(rotateButton);
-			//			window.draw(rotateButTexture);
-			//			window.draw(scaleButton);
-			//			window.draw(scaleButTexture);
-			//			//window.draw(moveText);
-			//			window.draw(moveButTexture);
-			//			newLine.drawLine(50, 40, 400, 100, window, sf::Color::Red);
-			//			newLine.drawBrokenLine(verticesPoint2d, window, sf::Color::Yellow, false);
-			//			circle.drawCircle(70, 70, 50, window, sf::Color::Magenta);
-			//			rectangle.drawPolygon(vertices, window, sf::Color::Red);
-			//			rectangle.filledPolygon(vertices, window, sf::Color::Green);
-			//			elipse.drawElipse(400, 300, 100, 50, window, sf::Color::Yellow);
-			//			player.drawPlayer(50, 30, window, sf::Color::Blue);
-			//			ptk.setPoint(100, 380);
-			//			ptk2.setPoint(150, 200);
-			//			ptk.draw(ptk, window, sf::Color::Cyan);
-			//			ptk2.draw(window, sf::Color::Blue);
-
-			//			// Rysujemy punkt
-			//			startPoint.draw(startPoint, window, sf::Color::Red);
-
-			//			// wczytywanie bitmapy z pliku
-			//			zaladujBitmape("bitmapa.png");
-
-			//			// zapisywanie bitmapy do pliku
-			//			zapiszBitmape("nowa_bitmapa.png");
-
-			//			// kopiowanie fragmentu bitmapy z silnika do samego siebie
-			//			// skopiujBitmapyZSilnika(100, 100, 200, 200);
-
-			//			// rysowanie bitmapy na ekranie
-			//			bitmapa.rysujNaRenderWindow(window, 300, 300);
-
-			//			// Wy�wietlamy wszystkie elementy
-			//			window.display();
-			//		}
-			//	}
-			//	else if (event.mouseButton.button == sf::Mouse::Right) {
-			//		//dalsza obsluga zdarzenia
-			//	}
-			//}
-
-
-		/*	if (event.type == sf::Event::MouseMoved) {
-				sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
-				std::cout << "Pozycja myszy: " << mousePosition.x << ", " << mousePosition.y << std::endl;
-			}*/
 
 			if (moveCounter == 5)
 			{
@@ -350,6 +370,8 @@ void Engine::run() {
 		window.draw(rotateButTexture);
 		window.draw(scaleButton);
 		window.draw(scaleButTexture);
+		window.draw(playButton);
+		window.draw(playButTexture);
 		//window.draw(moveText);
 		//newLine.drawLine(50, 40, 400, 100,window, sf::Color::Red);
 		//newLine.drawBrokenLine(verticesPoint2d, window, sf::Color::Yellow, false);
