@@ -68,7 +68,7 @@ void Engine::zapiszBitmape(const std::string& nazwaPliku) {
 }
 
 void Engine::skopiujBitmapyZSilnika(int x, int y, int szerokosc, int wysokosc) {
-	bitmapa.skopiujZBitmapy(bitmapa, x, y, szerokosc, wysokosc); // Wywo³anie metody z obiektu bitmapy
+	bitmapa.skopiujZBitmapy(bitmapa, x, y, szerokosc, wysokosc); // Wywoï¿½anie metody z obiektu bitmapy
 }
 
 void Engine::run() {
@@ -92,7 +92,7 @@ void Engine::run() {
 	moveButton.setPosition(toolPanel.getPosition().x + 3, toolPanel.getPosition().y + 3);
 	sf::Texture moveTexture;
 	if (!moveTexture.loadFromFile("moveButton.png")) {
-		std::cerr << "Nie mo¿na za³adowaæ obrazka!" << std::endl; 
+		std::cerr << "Nie moï¿½na zaï¿½adowaï¿½ obrazka!" << std::endl; 
 	}
 	sf::Sprite moveButTexture(moveTexture);
 	moveButTexture.setPosition(toolPanel.getPosition().x + 4, toolPanel.getPosition().y + 4);
@@ -105,7 +105,7 @@ void Engine::run() {
 	rotateButton.setPosition(toolPanel.getPosition().x + 3, toolPanel.getPosition().y + 30);
 	sf::Texture rotateTexture;
 	if (!rotateTexture.loadFromFile("rotateButton.png")) {
-		std::cerr << "Nie mo¿na za³adowaæ obrazka!" << std::endl;
+		std::cerr << "Nie moï¿½na zaï¿½adowaï¿½ obrazka!" << std::endl;
 	}
 	sf::Sprite rotateButTexture(rotateTexture);
 	rotateButTexture.setPosition(toolPanel.getPosition().x + 4, toolPanel.getPosition().y + 31);
@@ -118,7 +118,7 @@ void Engine::run() {
 	scaleButton.setPosition(toolPanel.getPosition().x + 3, toolPanel.getPosition().y + 57);
 	sf::Texture scaleTexture;
 	if (!scaleTexture.loadFromFile("scaleButton.png")) {
-		std::cerr << "Nie mo¿na za³adowaæ obrazka!" << std::endl;
+		std::cerr << "Nie moï¿½na zaï¿½adowaï¿½ obrazka!" << std::endl;
 	}
 	sf::Sprite scaleButTexture(scaleTexture);
 	scaleButTexture.setPosition(toolPanel.getPosition().x + 4, toolPanel.getPosition().y + 58);
@@ -138,7 +138,9 @@ void Engine::run() {
 	std::vector<Point2D> verticesPoint2d = {
 		sf::Vector2f(200, 200),
 		sf::Vector2f(400, 200),
-		sf::Vector2f(300, 300),
+		sf::Vector2f(295, 103),
+		sf::Vector2f(235, 103),
+		sf::Vector2f(295, 163),
 	};
 
 	sf::Clock clock;
@@ -167,7 +169,7 @@ void Engine::run() {
 				}
 			}
 
-			// Obs³uga strza³ek na klawiaturze, które przesuwaj¹ nasz obiekt rect
+			// Obsï¿½uga strzaï¿½ek na klawiaturze, ktï¿½re przesuwajï¿½ nasz obiekt rect
 			if (event.type == sf::Event::KeyPressed) {
 				if (event.key.code == sf::Keyboard::Left) {
 					player.move(-5.f, 0.f);
@@ -242,17 +244,17 @@ void Engine::run() {
 			//		sf::Vector2f direction = sf::Vector2f(mousePosition) - sf::Vector2f(player.c1, player.c2);
 			//		float length = std::sqrt(direction.x * direction.x + direction.y * direction.y);
 
-			//		// Normalizujemy wektor kierunku, aby uzyskaæ wektor jednostkowy
+			//		// Normalizujemy wektor kierunku, aby uzyskaï¿½ wektor jednostkowy
 			//		if (length != 0) {
 			//			direction /= length;
 			//		}
 
-			//		// Obliczamy punkt na obwodzie okrêgu, który bêdzie punktem pocz¹tkowym przemieszczenia
+			//		// Obliczamy punkt na obwodzie okrï¿½gu, ktï¿½ry bï¿½dzie punktem poczï¿½tkowym przemieszczenia
 			//		Bullet startPoint(player.c1, player.c2, direction, 5.0f);
 
-			//		// Dopóki punkt jest na ekranie, przesuwamy go w kierunku klikniêcia
+			//		// Dopï¿½ki punkt jest na ekranie, przesuwamy go w kierunku klikniï¿½cia
 			//		while (window.isOpen() && startPoint.getPoint().x >= 0 && startPoint.getPoint().x <= width && startPoint.getPoint().y >= 0 && startPoint.getPoint().y <= height) {
-			//			// Aktualizujemy po³o¿enie punktu
+			//			// Aktualizujemy poï¿½oï¿½enie punktu
 			//			startPoint.update();
 
 			//			// Czyscimy ekran
@@ -270,18 +272,18 @@ void Engine::run() {
 			//			window.draw(moveButTexture);
 			//			newLine.drawLine(50, 40, 400, 100, window, sf::Color::Red);
 			//			newLine.drawBrokenLine(verticesPoint2d, window, sf::Color::Yellow, false);
-			//			circle.drawCircle(400, 70, 50, window, sf::Color::Magenta);
-			//			//rectangle.drawPolygon(vertices, window, sf::Color::Red);
+			//			circle.drawCircle(70, 70, 50, window, sf::Color::Magenta);
+			//			rectangle.drawPolygon(vertices, window, sf::Color::Red);
 			//			rectangle.filledPolygon(vertices, window, sf::Color::Green);
 			//			elipse.drawElipse(400, 300, 100, 50, window, sf::Color::Yellow);
 			//			player.drawPlayer(50, 30, window, sf::Color::Blue);
 			//			ptk.setPoint(100, 380);
 			//			ptk2.setPoint(150, 200);
-			//			ptk.drawPoint(ptk, window, sf::Color::Cyan);
+			//			ptk.draw(ptk, window, sf::Color::Cyan);
 			//			ptk2.draw(window, sf::Color::Blue);
 
 			//			// Rysujemy punkt
-			//			startPoint.drawPoint(startPoint, window, sf::Color::Red);
+			//			startPoint.draw(startPoint, window, sf::Color::Red);
 
 			//			// wczytywanie bitmapy z pliku
 			//			zaladujBitmape("bitmapa.png");
@@ -295,12 +297,11 @@ void Engine::run() {
 			//			// rysowanie bitmapy na ekranie
 			//			bitmapa.rysujNaRenderWindow(window, 300, 300);
 
-			//			// Wyœwietlamy wszystkie elementy
+			//			// Wyï¿½wietlamy wszystkie elementy
 			//			window.display();
 			//		}
 			//	}
 			//	else if (event.mouseButton.button == sf::Mouse::Right) {
-			//		std::cout << "Wcisnieto prawy przycisk myszy" << std::endl;
 			//		//dalsza obsluga zdarzenia
 			//	}
 			//}
@@ -330,44 +331,14 @@ void Engine::run() {
 					}
 				}
 
-				// Resetujemy licznik ruchów
+				// Resetujemy licznik ruchï¿½w
 				moveCounter = 0;
 			}
-
-			if (event.type == sf::Event::MouseButtonPressed) {
-				if (event.mouseButton.button == sf::Mouse::Left) {
-					sf::Vector2f mousePosition = sf::Vector2f(event.mouseButton.x, event.mouseButton.y);
-					if (toolPanel.getGlobalBounds().contains(mousePosition)) {
-						// SprawdŸ, który obszar panelu narzêdziowego zosta³ klikniêty
-						// Tutaj mo¿esz u¿yæ dodatkowych obiektów sf::RectangleShape lub sf::Text,
-						// aby utworzyæ interaktywne obszary na panelu narzêdziowym
-						// Na przyk³ad, jeœli chcesz dodaæ napis "Przesuñ" na panelu:
-						sf::Text moveButton;
-						moveButton.setString("Przesun");
-						moveButton.setCharacterSize(20);
-						moveButton.setFillColor(sf::Color::Black);
-						moveButton.setPosition(toolPanel.getPosition().x + 10, toolPanel.getPosition().y + 10);
-
-						// SprawdŸ, czy klikniêcie nast¹pi³o w obszarze napisu "Przesuñ"
-						if (moveButton.getGlobalBounds().contains(mousePosition)) {
-							// Tutaj dodaj kod obs³ugi dla narzêdzia przesuwania
-							// Na przyk³ad, uruchom funkcjê do obs³ugi przesuwania figury
-							// np. figura.move(5, 5); // Przesuñ figurê o 5 pikseli w prawo i w dó³
-						}
-					}
-				}
-			}
-
-
-
-
-
-
 		}
 
 		// Czyszczenie ekranu do zadanego koloru (np. jasnoniebieski)
 		//window.clear(sf::Color(135, 206, 250));
-		// Czyœcimy ekran do wylosowanego koloru
+		// Czyï¿½cimy ekran do wylosowanego koloru
 		window.clear(bgColor);
 		// Wylczenie synchronizacji pionowej
 		window.setVerticalSyncEnabled(true);
@@ -380,16 +351,18 @@ void Engine::run() {
 		window.draw(scaleButton);
 		window.draw(scaleButTexture);
 		//window.draw(moveText);
-		newLine.drawLine(50, 40, 400, 100,window, sf::Color::Red);
-		newLine.drawBrokenLine(verticesPoint2d, window, sf::Color::Yellow, false);
-		circle.drawCircle(400, 70, 50, window, sf::Color::Magenta);
+		//newLine.drawLine(50, 40, 400, 100,window, sf::Color::Red);
+		//newLine.drawBrokenLine(verticesPoint2d, window, sf::Color::Yellow, false);
+		//circle.drawCircle(400, 70, 50, window, sf::Color::Magenta);
+		rectangle.drawSimplePolygon(verticesPoint2d, window, sf::Color::Magenta);
 		//rectangle.drawPolygon(vertices, window, sf::Color::Red);
-		elipse.drawElipse(400, 300, 100, 50, window, sf::Color::Yellow);
-		rectangle.filledPolygon(vertices, window, sf::Color::Green);
+		//elipse.drawElipse(400, 300, 100, 50, window, sf::Color::Yellow);
+		//rectangle.filledPolygon(vertices, window, sf::Color::Green);
 		player.drawPlayer(50, 30, window, sf::Color::Blue);
+
 		ptk.setPoint(100, 380);
 		ptk2.setPoint(150, 200);
-		ptk.drawPoint(ptk, window, sf::Color::Cyan);
+		ptk.draw(window, sf::Color::Cyan);
 		ptk2.draw(window, sf::Color::Blue);
 		
 
@@ -406,7 +379,7 @@ void Engine::run() {
 		bitmapa.rysujNaRenderWindow(window, 300, 300);
 	
 
-		/* Nasz¹ scenê tworzymy wiêc na buforze, którego zawartoœæ jest automatycznie kopiowana na ekran w chwili wywo³ania metody display
+		/* Naszï¿½ scenï¿½ tworzymy wiï¿½c na buforze, ktï¿½rego zawartoï¿½ï¿½ jest automatycznie kopiowana na ekran w chwili wywoï¿½ania metody display
 		W SFML zarzadzanie technika wielokrotnego buforowania nastepuje automatycznie
 		*/
 		window.display();

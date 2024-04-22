@@ -318,3 +318,60 @@ void PrimitiveRenderer::filledPolygon(const std::vector<sf::Vector2f>& vertices,
 	}
 
 }
+
+
+
+ bool PrimitiveRenderer::segmentsIntersect(sf::Vector2f p1, sf::Vector2f p2, sf::Vector2f q1, sf::Vector2f q2) {
+
+	 //Sprawdzenie czy odcnki maja punkt wspolny, ale nie przecianaja sie
+	 if ((p1 == q1 || p1 == q2 || p2 == q1 || p2 == q2))
+		 return false;
+
+	 //Sprawdzenie czy koñce jednego odcinka znajduj¹ siê po przeciwnych stronach linii wyznaczonej przez drugi odcinek
+	 float o1 = orientation(p1, p2, q1);
+	 float o2 = orientation(p1, p2, q2);
+	 float o3 = orientation(q1, q2, p1);
+	 float o4 = orientation(q1, q2, p2);
+
+	 // Sprawdzenie, czy odcinki przecinaj¹ siê
+	 if (o1 != o2 && o3 != o4)
+		 return true;
+
+	 return false;
+ }
+
+  float PrimitiveRenderer::orientation(sf::Vector2f p, sf::Vector2f q, sf::Vector2f r) {
+	 float val = (q.y - p.y) * (r.x - q.x) - (q.x - p.x) * (r.y - q.y);
+	 if (val == 0) return 0;  // punkty s¹ wspó³liniowe
+	 return (val > 0) ? 1 : 2; // zwraca 1 dla zgodnego ruchu zegara i 2 dla przeciwnego ruchu zegara
+ }
+
+
+ void PrimitiveRenderer::drawSimplePolygon(std::vector<Point2D> vertices, sf::RenderWindow& window, sf::Color color) {
+	 sf::VertexArray lines(sf::LinesStrip, vertices.size() +1 );
+
+	 // Dodaj wierzcho³ki do rysowania linii
+	 for (size_t i = 0; i < vertices.size(); ++i) {
+		 lines[i].position = vertices[i].getPoint();
+		 lines[i].color = color;
+	 }
+
+	 // Dodaj pierwszy wierzcho³ek jako ostatni, aby zamkn¹æ figure
+	 lines[vertices.size()] = lines[0];
+
+	 // SprawdŸ przeciêcia linii
+	 for (size_t i = 0; i < vertices.size(); ++i) {
+		 sf::Vector2f p1 = vertices[i].getPoint();
+		 sf::Vector2f p2 = vertices[(i + 1) % vertices.size()].getPoint(); // Nastêpny wierzcho³ek, a dla ostatniego bierzemy pierwszy
+		 for (size_t j = i + 2; j < vertices.size(); ++j) {
+			 sf::Vector2f q1 = vertices[j].getPoint();
+			 sf::Vector2f q2 = vertices[(j + 1) % vertices.size()].getPoint();
+			 if (PrimitiveRenderer::segmentsIntersect(p1, p2, q1, q2)) {
+				 return; // Przerywamy rysowanie dalszych linii, gdy ju¿ znaleŸliœmy przeciêcie
+			 }
+		 }
+	 }
+
+	 // Narysuj linie na oknie
+	 window.draw(lines);
+ }
