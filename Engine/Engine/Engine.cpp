@@ -82,7 +82,7 @@ void Engine::run() {
 	Point2D ptk2(600, 400);
 	bool bgWhite = true;
 
-	sf::RectangleShape toolPanel(sf::Vector2f(30, 111));
+	sf::RectangleShape toolPanel(sf::Vector2f(30, 246));
 	toolPanel.setFillColor(sf::Color(200, 200, 200));
 	
 	sf::RectangleShape moveButton(sf::Vector2f(24, 24));
@@ -124,17 +124,35 @@ void Engine::run() {
 	scaleButTexture.setPosition(toolPanel.getPosition().x + 4, toolPanel.getPosition().y + 58);
 	scaleButTexture.setScale(22.0f / scaleButTexture.getLocalBounds().width, 22.0f / scaleButTexture.getLocalBounds().height);
 
+	sf::RectangleShape whiteButton(sf::Vector2f(24, 24));
+	whiteButton.setFillColor(sf::Color::White);
+	whiteButton.setOutlineColor(sf::Color::Black);
+	whiteButton.setOutlineThickness(1);
+	whiteButton.setPosition(toolPanel.getPosition().x + 3, toolPanel.getPosition().y + 84);
+
+	sf::RectangleShape blackButton(sf::Vector2f(24, 24));
+	blackButton.setFillColor(sf::Color::Black);
+	blackButton.setOutlineColor(sf::Color::Black);
+	blackButton.setOutlineThickness(1);
+	blackButton.setPosition(toolPanel.getPosition().x + 3, toolPanel.getPosition().y + 111);
+
+	sf::RectangleShape greenButton(sf::Vector2f(24, 24));
+	greenButton.setFillColor(sf::Color::Green);
+	greenButton.setOutlineColor(sf::Color::Black);
+	greenButton.setOutlineThickness(1);
+	greenButton.setPosition(toolPanel.getPosition().x + 3, toolPanel.getPosition().y + 138);
+
 	sf::RectangleShape playButton(sf::Vector2f(24, 24));
 	playButton.setFillColor(sf::Color::White);
 	playButton.setOutlineColor(sf::Color::Black);
 	playButton.setOutlineThickness(1);
-	playButton.setPosition(toolPanel.getPosition().x + 3, toolPanel.getPosition().y + 84);
+	playButton.setPosition(toolPanel.getPosition().x + 3, toolPanel.getPosition().y + 165);
 	sf::Texture playTexture;
 	if (!playTexture.loadFromFile("playButton.png")) {
 		std::cerr << "Nie mo�na za�adowa� obrazka!" << std::endl;
 	}
 	sf::Sprite playButTexture(playTexture);
-	playButTexture.setPosition(toolPanel.getPosition().x + 4, toolPanel.getPosition().y + 85);
+	playButTexture.setPosition(toolPanel.getPosition().x + 4, toolPanel.getPosition().y + 166);
 	playButTexture.setScale(22.0f / playButTexture.getLocalBounds().width, 22.0f / playButTexture.getLocalBounds().height);
 
 	// Zmienna przechowujaca informacje, czy wcisniety przycisk do przesuwania figur
@@ -191,6 +209,15 @@ void Engine::run() {
 					else if (scaleButton.getGlobalBounds().contains(mousePosition)) {
 						scaleButton.setFillColor(sf::Color(100, 100, 100));
 						isScaleBut = true;
+					}
+					else if (whiteButton.getGlobalBounds().contains(mousePosition)) {
+						bgColor = sf::Color::White;
+					}
+					else if (blackButton.getGlobalBounds().contains(mousePosition)) {
+						bgColor = sf::Color::Black;
+					}
+					else if (greenButton.getGlobalBounds().contains(mousePosition)) {
+						bgColor = sf::Color::Green;
 					}
 					else if (playButton.getGlobalBounds().contains(mousePosition)) {
 						isGameOn = true;
@@ -310,32 +337,6 @@ void Engine::run() {
 					}
 				}
 			}
-
-			
-
-
-			if (moveCounter == 5)
-			{
-				if (bgWhite) {
-					bgColor.r = std::max(bgColor.r - 32, 0);
-					bgColor.g = std::max(bgColor.g - 32, 0);
-					bgColor.b = std::max(bgColor.b - 32, 0);
-					if (bgColor.r == 0 && bgColor.g == 0 && bgColor.b == 0) {
-						bgWhite = false;
-					}
-				}
-				else {
-					bgColor.r = std::min(bgColor.r + 32, 255);
-					bgColor.g = std::min(bgColor.g + 32, 255);
-					bgColor.b = std::min(bgColor.b + 32, 255);
-					if (bgColor.r == 255 && bgColor.g == 255 && bgColor.b == 255) {
-						bgWhite = true;
-					}
-				}
-
-				// Resetujemy licznik ruch�w
-				moveCounter = 0;
-			}
 		}
 
 		// Czyszczenie ekranu do zadanego koloru (np. jasnoniebieski)
@@ -353,6 +354,9 @@ void Engine::run() {
 			window.draw(rotateButTexture);
 			window.draw(scaleButton);
 			window.draw(scaleButTexture);
+			window.draw(whiteButton);
+			window.draw(blackButton);
+			window.draw(greenButton);
 			window.draw(playButton);
 			window.draw(playButTexture);
 		}
