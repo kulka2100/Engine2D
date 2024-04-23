@@ -175,10 +175,10 @@ void Engine::run() {
 	float temp_x, temp_y, temp_angle, temp_factor;
 
 	std::vector<sf::Vector2f> vertices = {
-		sf::Vector2f(100, 50),
-		sf::Vector2f(200, 100),
-		sf::Vector2f(200, 200),
-		sf::Vector2f(100, 150)
+		sf::Vector2f(500, 500),
+		sf::Vector2f(550, 500),
+		sf::Vector2f(550, 550),
+		sf::Vector2f(500, 550),
 	};
 
 	std::vector<Point2D> verticesPoint2d = {
@@ -251,7 +251,6 @@ void Engine::run() {
 			if (event.type == sf::Event::Closed) {
 				window.close();
 			}
-
 			if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
 				sf::Vector2f mousePosition = window.mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y));
 				if (toolPanel.getGlobalBounds().contains(mousePosition)) {
@@ -497,6 +496,15 @@ void Engine::run() {
 				//drawBackground();
 				
 			}
+
+			if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Right) {
+				sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
+				std::cout << mousePosition.x << " " << mousePosition.y << std::endl;
+				PrimitiveRenderer::floodFill(mousePosition, window, sf::Color::Yellow, sf::Color::Black);
+				window.display();
+				sf::sleep(sf::seconds(5));
+
+			}
 		}
 
 		// Czyszczenie ekranu do zadanego koloru (np. jasnoniebieski)
@@ -521,9 +529,9 @@ void Engine::run() {
 			window.draw(playButTexture);
 		}
 		//window.draw(moveText);
-			//newLine.drawLine(50, 40, 400, 100,window, sf::Color::Red);
-			//newLine.drawBrokenLine(verticesPoint2d, window, sf::Color::Yellow, false);
-			//circle.drawCircle(400, 70, 50, window, sf::Color::Magenta);
+		//newLine.drawLine(50, 40, 400, 100,window, sf::Color::Red);
+		//newLine.drawBrokenLine(verticesPoint2d, window, sf::Color::Yellow, false);
+		//circle.drawCircle(400, 70, 50, window, sf::Color::Magenta);
 		rectangle.drawSimplePolygon(verticesPoint2d, window, sf::Color::Magenta);
 		//rectangle.drawPolygon(vertices, window, sf::Color::Red);
 		//elipse.drawElipse(400, 300, 100, 50, window, sf::Color::Yellow);
@@ -538,7 +546,7 @@ void Engine::run() {
 		/* Naszďż˝ scenďż˝ tworzymy wiďż˝c na buforze, ktďż˝rego zawartoďż˝ďż˝ jest automatycznie kopiowana na ekran w chwili wywoďż˝ania metody display
 		W SFML zarzadzanie technika wielokrotnego buforowania nastepuje automatycznie
 		*/
-		
+	
 		
 		//clearScreen(window);
 		window.display();
@@ -560,7 +568,7 @@ void Engine::run() {
 			animationHandler.draw(window, 0, characterX, characterY);
 		}
 
-		// Pętla iterująca po wszystkich kierunkach
+		 //Pętla iterująca po wszystkich kierunkach
 		for (int i = 0; i < 4; ++i) {
 			if ((i == 0 && downKeyPressed) ||
 				(i == 1 && upKeyPressed) ||

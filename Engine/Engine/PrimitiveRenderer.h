@@ -44,8 +44,10 @@ public:
 	//Narysowanie wielokata wypelnionego kolorem, algorytm z kontrola parzystosci
 	void filledPolygon(const std::vector<sf::Vector2f>& vertices, sf::RenderWindow& window, sf::Color fillColor);
 
-	//Algorytm floodFill. mam problem jak go zastosowac w kodzie
-	static void floodFill(const sf::Vector2f& startPoint, sf::RenderWindow& window, sf::Color fillColor, sf::Color backgroundColor);
+	//Algorytm floodFill
+	static void floodFill(const sf::Vector2i& startPoint, sf::RenderWindow& window, sf::Color fillColor, sf::Color backgroundColor);
+
+	static void borderFill(const sf::Vector2i& startPoint, sf::RenderWindow& window, sf::Color fillColor, sf::Color boundryColor);
 
 
 	void drawSimplePolygon(std::vector<Point2D> vertices, sf::RenderWindow& window, sf::Color color);

@@ -1,4 +1,4 @@
-#include "PrimitiveRenderer.h"
+ï»¿#include "PrimitiveRenderer.h"
 #include <SFML/Window/Keyboard.hpp>
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
@@ -8,6 +8,8 @@
 #include <SFML/System/Sleep.hpp>
 #include "Engine.h"
 #include <stack>
+#include <queue>
+#include <unordered_set>
 
 
 PrimitiveRenderer::PrimitiveRenderer() : ShapeObject(), c1(400), c2(700) {}
@@ -44,17 +46,15 @@ sf::Color PrimitiveRenderer::getPixel(sf::Vector2i pixelPos, sf::RenderWindow& w
 	texture.create(window.getSize().x, window.getSize().y);
 	texture.update(window);
 
-	// Utwórz obraz na podstawie tekstury
+	// UtwÃ³rz obraz na podstawie tekstury
 	sf::Image image = texture.copyToImage();
 
 	sf::Color pixelColor = image.getPixel(pixelPos.x, pixelPos.y);
-
-	// Wyœwietl pobrany kolor w konsoli
 	std::cout << "Pobrany kolor piksela (" << pixelPos.x << ", " << pixelPos.y << "): R="
 		<< static_cast<int>(pixelColor.r) << ", G=" << static_cast<int>(pixelColor.g)
 		<< ", B=" << static_cast<int>(pixelColor.b) << std::endl;
 
-	// Pobierz kolor piksela na podanych wspó³rzêdnych
+	// Pobierz kolor piksela na podanych wspÃ³Å‚rzÄ™dnych
 	return pixelColor;
 }
 
@@ -273,12 +273,53 @@ void PrimitiveRenderer::filledPolygon(const std::vector<sf::Vector2f>& vertices,
 }
 
 //Nie do konca dziala
- void PrimitiveRenderer::floodFill(const sf::Vector2f& startPoint, sf::RenderWindow& window, sf::Color fillColor, sf::Color backgroundColor) {
-	//Utworz stos
+void PrimitiveRenderer::floodFill(const sf::Vector2i& startPoint, sf::RenderWindow& window, sf::Color fillColor, sf::Color backgroundColor) {
 	std::stack<sf::Vector2i> pixelStack;
+	sf::Vector2u windowSize = window.getSize();
+
+	if (startPoint.x < 0 || startPoint.x >= static_cast<int>(windowSize.x) || startPoint.y < 0 || startPoint.y >= static_cast<int>(windowSize.y)) {
+		return;
+	}
+
+	putPixel(startPoint.x, startPoint.y, window, fillColor);
+	pixelStack.push(startPoint);
+
+	while (!pixelStack.empty()) {
+		sf::Vector2i pixel = pixelStack.top();
+		pixelStack.pop();
+		sf::Color currentColor = getPixel(pixel, window);
 
 
-	std::vector<std::vector<bool>> visitedPixels(window.getSize().x, std::vector<bool>(window.getSize().y, false));
+		if (currentColor == fillColor || currentColor != backgroundColor) {
+			continue;
+		}
+
+
+		if (pixel.y - 1 >= 0) {
+			putPixel(pixel.x, pixel.y - 1, window, fillColor);
+			pixelStack.push(sf::Vector2i(pixel.x, pixel.y - 1));
+		}
+		if (pixel.y + 1 < static_cast<int>(windowSize.y)) {
+			putPixel(pixel.x, pixel.y + 1, window, fillColor);
+			pixelStack.push(sf::Vector2i(pixel.x, pixel.y + 1));
+		}
+		if (pixel.x - 1 >= 0) {
+			putPixel(pixel.x - 1, pixel.y, window, fillColor);
+			pixelStack.push(sf::Vector2i(pixel.x - 1, pixel.y));
+		}
+		if (pixel.x + 1 < static_cast<int>(windowSize.x)) {
+			putPixel(pixel.x + 1, pixel.y, window, fillColor);
+			pixelStack.push(sf::Vector2i(pixel.x + 1, pixel.y));
+		}
+			
+	}
+
+	std::cout << "Wykonano " << std::endl;
+}
+
+void PrimitiveRenderer::borderFill(const sf::Vector2i& startPoint, sf::RenderWindow& window, sf::Color fillColor, sf::Color boundryColor) {
+	std::queue<sf::Vector2i> pixelQueue;
+
 
 	sf::Vector2u windowSize = window.getSize();
 
@@ -286,38 +327,43 @@ void PrimitiveRenderer::filledPolygon(const std::vector<sf::Vector2f>& vertices,
 		return;
 	}
 
-	//Wyswietl pixel a nastepnie zapisz go na stosie
+
+
 	putPixel(startPoint.x, startPoint.y, window, fillColor);
-	pixelStack.push(sf::Vector2i(static_cast<int>(startPoint.x), static_cast<int>(startPoint.y)));
+	pixelQueue.push(startPoint);
 
+	sf::Vector2i pixel;
 
-	while (!pixelStack.empty()) {
-		//Zapisz ostatni element ze stosu w zmiennej pixel, a nastepnie zdejmij ten element ze stosu
-		sf::Vector2i pixel = pixelStack.top();
-		pixelStack.pop();
+	while (!pixelQueue.empty()) {
+		pixel = pixelQueue.front();
+		pixelQueue.pop();
 
-		if (!visitedPixels[pixel.x][pixel.y]) {
-
-			visitedPixels[pixel.x][pixel.y] = true;
-
-
-			// pobranie koloru akutalnego pixela
 		sf::Color currentColor = getPixel(pixel, window);
 
-		//Jesli pixel ze stosu jest taki sam jak ten ekranie zamien kolor
-		if (currentColor == backgroundColor) {
-			putPixel(pixel.x, pixel.y, window, fillColor);
-			//Umiesc 4 sasiadow tego pixela na stosie
-			pixelStack.push(sf::Vector2i(pixel.x + 1, pixel.y));
-			pixelStack.push(sf::Vector2i(pixel.x - 1, pixel.y));
-			pixelStack.push(sf::Vector2i(pixel.x, pixel.y + 1));
-			pixelStack.push(sf::Vector2i(pixel.x, pixel.y - 1));
+		if (currentColor == boundryColor || currentColor == fillColor) {
+			 continue;
+		 }
 
-			}
+		// Dodaj sÄ…siadÃ³w piksela do kolejki
+		if (pixel.y - 1 >= 0 ) {
+			pixelQueue.push(sf::Vector2i(pixel.x, pixel.y - 1));
 		}
-	}
+		if (pixel.y + 1 < windowSize.y) {
+			pixelQueue.push(sf::Vector2i(pixel.x, pixel.y + 1));
+		}
+		if (pixel.x - 1 >= 0 ) {
+			pixelQueue.push(sf::Vector2i(pixel.x - 1, pixel.y));
+		}
+		if (pixel.x + 1 < windowSize.x ) {
+			pixelQueue.push(sf::Vector2i(pixel.x + 1, pixel.y));
+		}
+	
+	 }
 
-}
+	 std::cout << "Wykonano " << std::endl;
+
+ }
+
 
 
 
@@ -327,13 +373,13 @@ void PrimitiveRenderer::filledPolygon(const std::vector<sf::Vector2f>& vertices,
 	 if ((p1 == q1 || p1 == q2 || p2 == q1 || p2 == q2))
 		 return false;
 
-	 //Sprawdzenie czy koñce jednego odcinka znajduj¹ siê po przeciwnych stronach linii wyznaczonej przez drugi odcinek
+	 //Sprawdzenie czy koÅ„ce jednego odcinka znajdujÄ… siÄ™ po przeciwnych stronach linii wyznaczonej przez drugi odcinek
 	 float o1 = orientation(p1, p2, q1);
 	 float o2 = orientation(p1, p2, q2);
 	 float o3 = orientation(q1, q2, p1);
 	 float o4 = orientation(q1, q2, p2);
 
-	 // Sprawdzenie, czy odcinki przecinaj¹ siê
+	 // Sprawdzenie, czy odcinki przecinajÄ… siÄ™
 	 if (o1 != o2 && o3 != o4)
 		 return true;
 
@@ -342,7 +388,7 @@ void PrimitiveRenderer::filledPolygon(const std::vector<sf::Vector2f>& vertices,
 
   float PrimitiveRenderer::orientation(sf::Vector2f p, sf::Vector2f q, sf::Vector2f r) {
 	 float val = (q.y - p.y) * (r.x - q.x) - (q.x - p.x) * (r.y - q.y);
-	 if (val == 0) return 0;  // punkty s¹ wspó³liniowe
+	 if (val == 0) return 0;  // punkty sÄ… wspÃ³Å‚liniowe
 	 return (val > 0) ? 1 : 2; // zwraca 1 dla zgodnego ruchu zegara i 2 dla przeciwnego ruchu zegara
  }
 
@@ -350,24 +396,24 @@ void PrimitiveRenderer::filledPolygon(const std::vector<sf::Vector2f>& vertices,
  void PrimitiveRenderer::drawSimplePolygon(std::vector<Point2D> vertices, sf::RenderWindow& window, sf::Color color) {
 	 sf::VertexArray lines(sf::LinesStrip, vertices.size() +1 );
 
-	 // Dodaj wierzcho³ki do rysowania linii
+	 // Dodaj wierzchoÅ‚ki do rysowania linii
 	 for (size_t i = 0; i < vertices.size(); ++i) {
 		 lines[i].position = vertices[i].getPoint();
 		 lines[i].color = color;
 	 }
 
-	 // Dodaj pierwszy wierzcho³ek jako ostatni, aby zamkn¹æ figure
+	 // Dodaj pierwszy wierzchoÅ‚ek jako ostatni, aby zamknÄ…Ä‡ figure
 	 lines[vertices.size()] = lines[0];
 
-	 // SprawdŸ przeciêcia linii
+	 // SprawdÅº przeciÄ™cia linii
 	 for (size_t i = 0; i < vertices.size(); ++i) {
 		 sf::Vector2f p1 = vertices[i].getPoint();
-		 sf::Vector2f p2 = vertices[(i + 1) % vertices.size()].getPoint(); // Nastêpny wierzcho³ek, a dla ostatniego bierzemy pierwszy
+		 sf::Vector2f p2 = vertices[(i + 1) % vertices.size()].getPoint(); // NastÄ™pny wierzchoÅ‚ek, a dla ostatniego bierzemy pierwszy
 		 for (size_t j = i + 2; j < vertices.size(); ++j) {
 			 sf::Vector2f q1 = vertices[j].getPoint();
 			 sf::Vector2f q2 = vertices[(j + 1) % vertices.size()].getPoint();
 			 if (PrimitiveRenderer::segmentsIntersect(p1, p2, q1, q2)) {
-				 return; // Przerywamy rysowanie dalszych linii, gdy ju¿ znaleŸliœmy przeciêcie
+				 return; // Przerywamy rysowanie dalszych linii, gdy juÅ¼ znaleÅºliÅ›my przeciÄ™cie
 			 }
 		 }
 	 }
