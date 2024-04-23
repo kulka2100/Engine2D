@@ -95,7 +95,7 @@ void Engine::run() {
 	PrimitiveRenderer player;
 	Point2D ptk(700, 400);
 	Point2D ptk2(600, 400);
-	bool bgWhite = true;
+	bool bgTexture = false;
 
 	sf::RectangleShape toolPanel(sf::Vector2f(30, 246));
 	toolPanel.setFillColor(sf::Color(200, 200, 200));
@@ -277,12 +277,14 @@ void Engine::run() {
 					}
 					else if (whiteButton.getGlobalBounds().contains(mousePosition)) {
 						bgColor = sf::Color::White;
+						bgTexture = false;
 					}
 					else if (blackButton.getGlobalBounds().contains(mousePosition)) {
 						bgColor = sf::Color::Black;
+						bgTexture = false;
 					}
 					else if (greenButton.getGlobalBounds().contains(mousePosition)) {
-						bgColor = sf::Color::Green;
+						bgTexture = true;
 					}
 					else if (playButton.getGlobalBounds().contains(mousePosition)) {
 						isGameOn = true;
@@ -536,14 +538,21 @@ void Engine::run() {
 		/* Naszďż˝ scenďż˝ tworzymy wiďż˝c na buforze, ktďż˝rego zawartoďż˝ďż˝ jest automatycznie kopiowana na ekran w chwili wywoďż˝ania metody display
 		W SFML zarzadzanie technika wielokrotnego buforowania nastepuje automatycznie
 		*/
-
+		
+		
 		//clearScreen(window);
 		window.display();
 		clearScreen(window);
+		if (bgTexture) {
+			// Rysuj tło
+			drawBackground();
+		}
+		else {
+			window.clear(bgColor);
+		}
 		
-
-		// Rysuj tło
-		drawBackground();
+		
+		
 
 		//Sprawdzenie, czy żaden klawisz strzałki nie jest naciśnięty
 		if (!leftKeyPressed && !rightKeyPressed && !upKeyPressed && !downKeyPressed) {
