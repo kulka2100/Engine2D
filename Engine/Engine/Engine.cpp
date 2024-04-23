@@ -220,6 +220,7 @@ void Engine::run() {
 		std::cerr << "Failed to load background." << std::endl;
 		return;
 	}
+	
 
 	// Dodajemy animacje dla każdego kierunku do AnimationHandler
 	animationHandler.addAnimation(downFrames);
@@ -243,6 +244,7 @@ void Engine::run() {
 	while (window.isOpen()) {
 		sf::Event event;
 		window.setFramerateLimit(limitFramrate);
+		
 
 		//Nasluchiwnie zdarzen
 		while (window.pollEvent(event)) {
@@ -320,7 +322,7 @@ void Engine::run() {
 						isGameOn = false;
 					}
 				}
-
+				
 				// Obsďż˝uga strzaďż˝ek na klawiaturze, ktďż˝re przesuwajďż˝ nasz obiekt rect
 				if (event.type == sf::Event::KeyPressed) {
 					if (event.key.code == sf::Keyboard::Left) {
@@ -402,7 +404,7 @@ void Engine::run() {
 						backgroundSprite.move(0, -characterSpeed);
 					}
 				}
-				// Sprawdzenie, czy żaden klawisz strzałki nie jest naciśnięty
+				//Sprawdzenie, czy żaden klawisz strzałki nie jest naciśnięty
 				if (!leftKeyPressed && !rightKeyPressed && !upKeyPressed && !downKeyPressed) {
 					if (animationHandler.getWasUpdated(0)) {
 						// Rozpocznij odtwarzanie animacji poruszania się w dół
@@ -420,72 +422,85 @@ void Engine::run() {
 						animationHandler.update(i);
 					}
 				}
-				if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
-					sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
-					sf::Vector2f direction = sf::Vector2f(mousePosition) - sf::Vector2f(player.GameObject::getX(), player.GameObject::getY());
-					float length = std::sqrt(direction.x * direction.x + direction.y * direction.y);
+				//if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
+				//	sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
+				//	sf::Vector2f direction = sf::Vector2f(mousePosition) - sf::Vector2f(player.GameObject::getX(), player.GameObject::getY());
+				//	float length = std::sqrt(direction.x * direction.x + direction.y * direction.y);
 
-					// Normalizujemy wektor kierunku, aby uzyskaďż˝ wektor jednostkowy
-					if (length != 0) {
-						direction /= length;
-					}
+				//	// Normalizujemy wektor kierunku, aby uzyskaďż˝ wektor jednostkowy
+				//	if (length != 0) {
+				//		direction /= length;
+				//	}
 
-					// Obliczamy punkt na obwodzie okrďż˝gu, ktďż˝ry bďż˝dzie punktem poczďż˝tkowym przemieszczenia
-					Bullet startPoint(player.GameObject::getX(), player.GameObject::getY(), direction, 5.0f);
+				//	// Obliczamy punkt na obwodzie okrďż˝gu, ktďż˝ry bďż˝dzie punktem poczďż˝tkowym przemieszczenia
+				//	Bullet startPoint(player.GameObject::getX(), player.GameObject::getY(), direction, 5.0f);
 
-					// Dopďż˝ki punkt jest na ekranie, przesuwamy go w kierunku klikniďż˝cia
-					while (startPoint.getPoint().x >= 0 && startPoint.getPoint().x <= width && startPoint.getPoint().y >= 0 && startPoint.getPoint().y <= height) {
-						// Aktualizujemy poďż˝oďż˝enie punktu
-						startPoint.update();
+				//	// Dopďż˝ki punkt jest na ekranie, przesuwamy go w kierunku klikniďż˝cia
+				//	while (startPoint.getPoint().x >= 0 && startPoint.getPoint().x <= width && startPoint.getPoint().y >= 0 && startPoint.getPoint().y <= height) {
+				//		// Aktualizujemy poďż˝oďż˝enie punktu
+				//		startPoint.update();
 
 
 
-						// Czyďż˝cimy ekran do wybranego koloru tla
-						window.clear(bgColor);
-						// Wylczenie synchronizacji pionowej
-						window.setVerticalSyncEnabled(true);
+				//		// Czyďż˝cimy ekran do wybranego koloru tla
+				//		window.clear(bgColor);
+				//		// Wylczenie synchronizacji pionowej
+				//		window.setVerticalSyncEnabled(true);
 
-						//window.draw(moveText);
-						//newLine.drawLine(50, 40, 400, 100,window, sf::Color::Red);
-						//newLine.drawBrokenLine(verticesPoint2d, window, sf::Color::Yellow, false);
-						//circle.drawCircle(400, 70, 50, window, sf::Color::Magenta);
-						rectangle.drawSimplePolygon(verticesPoint2d, window, sf::Color::Magenta);
-						//rectangle.drawPolygon(vertices, window, sf::Color::Red);
-						//elipse.drawElipse(400, 300, 100, 50, window, sf::Color::Yellow);
-						//rectangle.filledPolygon(vertices, window, sf::Color::Green);
-						player.drawPlayer(50, 30, window, sf::Color::Blue);
+				//		//window.draw(moveText);
+				//		//newLine.drawLine(50, 40, 400, 100,window, sf::Color::Red);
+				//		//newLine.drawBrokenLine(verticesPoint2d, window, sf::Color::Yellow, false);
+				//		//circle.drawCircle(400, 70, 50, window, sf::Color::Magenta);
+				//		rectangle.drawSimplePolygon(verticesPoint2d, window, sf::Color::Magenta);
+				//		//rectangle.drawPolygon(vertices, window, sf::Color::Red);
+				//		//elipse.drawElipse(400, 300, 100, 50, window, sf::Color::Yellow);
+				//		//rectangle.filledPolygon(vertices, window, sf::Color::Green);
+				//		player.drawPlayer(50, 30, window, sf::Color::Blue);
 
-						ptk.setPoint(100, 380);
-						ptk2.setPoint(150, 200);
-						ptk.draw(window, sf::Color::Cyan);
-						ptk2.draw(window, sf::Color::Blue);
+				//		ptk.setPoint(100, 380);
+				//		ptk2.setPoint(150, 200);
+				//		ptk.draw(window, sf::Color::Cyan);
+				//		ptk2.draw(window, sf::Color::Blue);
 
-						// Rysujemy punkt
-						startPoint.draw(window, sf::Color::Red);
+				//		// Rysujemy punkt
+				//		startPoint.draw(window, sf::Color::Red);
 
-						// wczytywanie bitmapy z pliku
-						//zaladujBitmape("bitmapa.png");
+				//		// wczytywanie bitmapy z pliku
+				//		//zaladujBitmape("bitmapa.png");
 
-						// zapisywanie bitmapy do pliku
-						//zapiszBitmape("nowa_bitmapa.png");
+				//		// zapisywanie bitmapy do pliku
+				//		//zapiszBitmape("nowa_bitmapa.png");
 
-						// kopiowanie fragmentu bitmapy z silnika do samego siebie
-						// skopiujBitmapyZSilnika(100, 100, 200, 200);
+				//		// kopiowanie fragmentu bitmapy z silnika do samego siebie
+				//		// skopiujBitmapyZSilnika(100, 100, 200, 200);
 
-						// rysowanie bitmapy na ekranie
-							//bitmapa.rysujNaRenderWindow(window, 300, 300);
+				//		// rysowanie bitmapy na ekranie
+				//			//bitmapa.rysujNaRenderWindow(window, 300, 300);
+				//		// Rysuj tło
+				//		// Wyďż˝wietlamy wszystkie elementy
+				//		window.display();
+				//	}
+				//}
+				
 
-						// Wyďż˝wietlamy wszystkie elementy
-						window.display();
-					}
-				}
+				//std::cout << "Czas trwania klatki: " << deltaTime.asSeconds() << " sekundy" << std::endl;
+
+				
+
+				
+				//window.display();
+				//clearScreen(window);
+
+				//// Rysuj tło
+				//drawBackground();
+				
 			}
 		}
 
 		// Czyszczenie ekranu do zadanego koloru (np. jasnoniebieski)
 		//window.clear(sf::Color(135, 206, 250));
-		// Czyďż˝cimy ekran do wylosowanego koloru
-		window.clear(bgColor);
+		// Czyďż˝cimy ekran do wybranego koloru
+		//window.clear(bgColor);
 		// Wylczenie synchronizacji pionowej
 		window.setVerticalSyncEnabled(true);
 
@@ -521,16 +536,16 @@ void Engine::run() {
 		/* Naszďż˝ scenďż˝ tworzymy wiďż˝c na buforze, ktďż˝rego zawartoďż˝ďż˝ jest automatycznie kopiowana na ekran w chwili wywoďż˝ania metody display
 		W SFML zarzadzanie technika wielokrotnego buforowania nastepuje automatycznie
 		*/
+
+		//clearScreen(window);
 		window.display();
-
-		//std::cout << "Czas trwania klatki: " << deltaTime.asSeconds() << " sekundy" << std::endl;
-
 		clearScreen(window);
+		
 
 		// Rysuj tło
 		drawBackground();
 
-		// Sprawdzenie, czy żaden klawisz strzałki nie jest naciśnięty
+		//Sprawdzenie, czy żaden klawisz strzałki nie jest naciśnięty
 		if (!leftKeyPressed && !rightKeyPressed && !upKeyPressed && !downKeyPressed) {
 			// Rysuj klatkę animacji poruszania się w dół
 			animationHandler.draw(window, 0, characterX, characterY);
@@ -546,6 +561,11 @@ void Engine::run() {
 				animationHandler.draw(window, i, characterX, characterY);
 			}
 		}
+		
+		
+
+		//std::cout << "Czas trwania klatki: " << deltaTime.asSeconds() << " sekundy" << std::endl;
+
 	}
 }
 

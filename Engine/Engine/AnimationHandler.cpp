@@ -119,7 +119,7 @@ void AnimationHandler::draw(sf::RenderWindow& window, unsigned int animationInde
     window.draw(sprite);
 
     // Wyœwietlenie komunikatu o rysowaniu bie¿¹cej klatki animacji
-    std::cout << "Rysowanie klatki animacji. Bie¿¹ca klatka: " << animation.currentFrame << "Ilosc wszytskich klatek:" << animation.frames.size() << std::endl;
+    //std::cout << "Rysowanie klatki animacji. Bie¿¹ca klatka: " << animation.currentFrame << "Ilosc wszytskich klatek:" << animation.frames.size() << std::endl;
 }
 
 // Funkcja zwracaj¹ca informacjê, czy animacja o podanym indeksie zosta³a zaktualizowana
