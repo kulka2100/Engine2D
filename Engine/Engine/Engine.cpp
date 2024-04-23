@@ -5,7 +5,7 @@
 
 
 // Po ":" wypisujemy liste inicjalizacyjna zastepujaca np. this->width = w;
-Engine:: Engine(int w, int h, bool fullscreen) : width(w), height(h), fullscreen(fullscreen), window(sf::VideoMode(w, h), "Engine2D"), moveCounter(0) {
+Engine::Engine(int w, int h, bool fullscreen) : width(w), height(h), fullscreen(fullscreen), window(sf::VideoMode(w, h), "Engine2D"), moveCounter(0) {
 	if (fullscreen) {
 		window.create(sf::VideoMode(w, h), "Engine2D", sf::Style::Fullscreen);
 	}
@@ -31,11 +31,11 @@ Engine:: Engine(int w, int h, bool fullscreen) : width(w), height(h), fullscreen
 
 
 
-void Engine:: setLimit(int limit) {
+void Engine::setLimit(int limit) {
 	this->limitFramrate = limit;
 }
 
-void Engine:: clearScreen(sf::RenderTarget& target, const sf::Color& color) {
+void Engine::clearScreen(sf::RenderTarget& target, const sf::Color& color) {
 	target.clear(color);
 }
 
@@ -59,16 +59,31 @@ void Engine::setWindowSize(int w, int h) {
 	window.setSize(sf::Vector2u(width, height));
 }
 
-void Engine::zaladujBitmape(const std::string& nazwaPliku) {
-	bitmapa.zaladujZPliku(nazwaPliku);
+// Metoda wczytująca tło z pliku
+bool Engine::loadBackground(const std::string& filename)
+{
+	// Wczytywanie tekstury tła z pliku o podanej nazwie (filename)
+	if (!backgroundTexture.loadFromFile(filename))
+	{
+		std::cerr << "Blad wczytywania tekstury tla." << std::endl;
+		return false;
+	}
+
+	// Jeśli wczytanie tekstury tła zakończyło się sukcesem, ustaw teksturę na sprajcie tła (backgroundSprite)
+	backgroundSprite.setTexture(backgroundTexture);
+
+	return true;
 }
 
-void Engine::zapiszBitmape(const std::string& nazwaPliku) {
-	bitmapa.zapiszDoPliku(nazwaPliku);
-}
+// Metoda rysująca tło
+void Engine::drawBackground()
+{
+	// Jeśli tło nie jest zainicjowane, nie rysuj
+	if (!backgroundTexture.getSize().x)
+		return;
 
-void Engine::skopiujBitmapyZSilnika(int x, int y, int szerokosc, int wysokosc) {
-	bitmapa.skopiujZBitmapy(bitmapa, x, y, szerokosc, wysokosc); // Wywo�anie metody z obiektu bitmapy
+	// Rysuj tło
+	window.draw(backgroundSprite);
 }
 
 void Engine::run() {
@@ -84,7 +99,7 @@ void Engine::run() {
 
 	sf::RectangleShape toolPanel(sf::Vector2f(30, 246));
 	toolPanel.setFillColor(sf::Color(200, 200, 200));
-	
+
 	sf::RectangleShape moveButton(sf::Vector2f(24, 24));
 	moveButton.setFillColor(sf::Color::White);
 	moveButton.setOutlineColor(sf::Color::Black);
@@ -92,7 +107,7 @@ void Engine::run() {
 	moveButton.setPosition(toolPanel.getPosition().x + 3, toolPanel.getPosition().y + 3);
 	sf::Texture moveTexture;
 	if (!moveTexture.loadFromFile("moveButton.png")) {
-		std::cerr << "Nie mo�na za�adowa� obrazka!" << std::endl; 
+		std::cerr << "Nie moďż˝na zaďż˝adowaďż˝ obrazka!" << std::endl;
 	}
 	sf::Sprite moveButTexture(moveTexture);
 	moveButTexture.setPosition(toolPanel.getPosition().x + 4, toolPanel.getPosition().y + 4);
@@ -105,12 +120,12 @@ void Engine::run() {
 	rotateButton.setPosition(toolPanel.getPosition().x + 3, toolPanel.getPosition().y + 30);
 	sf::Texture rotateTexture;
 	if (!rotateTexture.loadFromFile("rotateButton.png")) {
-		std::cerr << "Nie mo�na za�adowa� obrazka!" << std::endl;
+		std::cerr << "Nie moďż˝na zaďż˝adowaďż˝ obrazka!" << std::endl;
 	}
 	sf::Sprite rotateButTexture(rotateTexture);
 	rotateButTexture.setPosition(toolPanel.getPosition().x + 4, toolPanel.getPosition().y + 31);
 	rotateButTexture.setScale(22.0f / rotateButTexture.getLocalBounds().width, 22.0f / rotateButTexture.getLocalBounds().height);
-	
+
 	sf::RectangleShape scaleButton(sf::Vector2f(24, 24));
 	scaleButton.setFillColor(sf::Color::White);
 	scaleButton.setOutlineColor(sf::Color::Black);
@@ -118,7 +133,7 @@ void Engine::run() {
 	scaleButton.setPosition(toolPanel.getPosition().x + 3, toolPanel.getPosition().y + 57);
 	sf::Texture scaleTexture;
 	if (!scaleTexture.loadFromFile("scaleButton.png")) {
-		std::cerr << "Nie mo�na za�adowa� obrazka!" << std::endl;
+		std::cerr << "Nie moďż˝na zaďż˝adowaďż˝ obrazka!" << std::endl;
 	}
 	sf::Sprite scaleButTexture(scaleTexture);
 	scaleButTexture.setPosition(toolPanel.getPosition().x + 4, toolPanel.getPosition().y + 58);
@@ -149,7 +164,7 @@ void Engine::run() {
 	playButton.setPosition(toolPanel.getPosition().x + 3, toolPanel.getPosition().y + 165);
 	sf::Texture playTexture;
 	if (!playTexture.loadFromFile("playButton.png")) {
-		std::cerr << "Nie mo�na za�adowa� obrazka!" << std::endl;
+		std::cerr << "Nie moďż˝na zaďż˝adowaďż˝ obrazka!" << std::endl;
 	}
 	sf::Sprite playButTexture(playTexture);
 	playButTexture.setPosition(toolPanel.getPosition().x + 4, toolPanel.getPosition().y + 166);
@@ -174,18 +189,66 @@ void Engine::run() {
 		sf::Vector2f(295, 163),
 	};
 
-	sf::Clock clock;
+	sf::RenderWindow& window = getWindow();
+
+	// Tworzymy tekstury dla każdej klatki animacji (dla nazw "down1.png", "up2.png", itd.)
+	std::vector<sf::Texture> downFrames, upFrames, leftFrames, rightFrames;
+	// Dodajemy po cztery klatki animacji dla każdego kierunku
+	for (int i = 1; i <= 4; ++i) {
+		sf::Texture texture;
+		texture.loadFromFile("down" + std::to_string(i) + ".png");
+		downFrames.push_back(texture);
+	}
+	for (int i = 1; i <= 4; ++i) {
+		sf::Texture texture;
+		texture.loadFromFile("up" + std::to_string(i) + ".png");
+		upFrames.push_back(texture);
+	}
+	for (int i = 1; i <= 4; ++i) {
+		sf::Texture texture;
+		texture.loadFromFile("left" + std::to_string(i) + ".png");
+		leftFrames.push_back(texture);
+	}
+	for (int i = 1; i <= 4; ++i) {
+		sf::Texture texture;
+		texture.loadFromFile("right" + std::to_string(i) + ".png");
+		rightFrames.push_back(texture);
+	}
+
+	if (!loadBackground("background.jpg"))
+	{
+		std::cerr << "Failed to load background." << std::endl;
+		return;
+	}
+
+	// Dodajemy animacje dla każdego kierunku do AnimationHandler
+	animationHandler.addAnimation(downFrames);
+	animationHandler.addAnimation(upFrames);
+	animationHandler.addAnimation(leftFrames);
+	animationHandler.addAnimation(rightFrames);
+
+	// Pozycja postaci na ekranie
+	float characterX = 400.0f;
+	float characterY = 300.0f;
+	float characterSpeed = 5.0f; // Szybkość poruszania postaci
+
+	window.setVerticalSyncEnabled(true);
+
+	// Deklaracja zmiennych (flag) z informacją o wciśnięciu danego klawisza
+	bool leftKeyPressed = false;
+	bool rightKeyPressed = false;
+	bool upKeyPressed = false;
+	bool downKeyPressed = false;
 
 	while (window.isOpen()) {
-		//Pobiera czas, ktory uplynal od ostatniego wywolania clock.restart()
-		sf::Time deltaTime = clock.restart();
 		sf::Event event;
+		window.setFramerateLimit(limitFramrate);
 
 		//Nasluchiwnie zdarzen
 		while (window.pollEvent(event)) {
 			if (event.type == sf::Event::Closed) {
 				window.close();
-			} 
+			}
 
 			if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
 				sf::Vector2f mousePosition = window.mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y));
@@ -221,13 +284,13 @@ void Engine::run() {
 					}
 					else if (playButton.getGlobalBounds().contains(mousePosition)) {
 						isGameOn = true;
-					}
+					}		
 				}
 				else if (isMoveBut == true) {
 					std::cout << "Wykorzystanie metody przesuniecia na przykladzie obiektu player" << std::endl;
 					std::cout << "Wprowadz wartosc o jaka chcesz przesunac obiekt player w poziomie" << std::endl;
 					std::cin >> temp_x;
-					std::cout << "Wprowadz wartosc o jaka chcesz przesunac obiekt player w pionie" << std::endl;
+					std::cout << "Wprowadz wartosc o jaka chcesz przesunac obiekt player w pionie" << std::endl;						
 					std::cin >> temp_y;
 					player.translate(temp_x, temp_y);
 				}
@@ -249,7 +312,7 @@ void Engine::run() {
 					setFullscreen(true);
 				}
 
-				// Ustawienie ekranu na rozdzielczosc 800x600 skrotem ALT+R
+				// Wyjscie z trybu pelnoekranowego
 				if (event.type == sf::Event::KeyPressed) {
 					if (event.key.code == sf::Keyboard::Escape) {
 						setFullscreen(false);
@@ -258,23 +321,103 @@ void Engine::run() {
 					}
 				}
 
-				// Obs�uga strza�ek na klawiaturze, kt�re przesuwaj� nasz obiekt rect
+				// Obsďż˝uga strzaďż˝ek na klawiaturze, ktďż˝re przesuwajďż˝ nasz obiekt rect
 				if (event.type == sf::Event::KeyPressed) {
 					if (event.key.code == sf::Keyboard::Left) {
-						player.move(-5.f, 0.f);
-						moveCounter++;
+						leftKeyPressed = true; // Ustaw flagę na true, gdy klawisz jest wciśnięty
+						characterX -= characterSpeed; // Przesunięcie postaci w lewo
+						if (animationHandler.getWasUpdated(2)) {
+							animationHandler.play(2, sf::seconds(0.2)); // Rozpocznij odtwarzanie animacji
+						}
 					}
 					else if (event.key.code == sf::Keyboard::Right) {
-						player.move(5.f, 0.f);
-						moveCounter++;
+						rightKeyPressed = true; // Ustaw flagę na true, gdy klawisz jest wciśnięty
+						characterX += characterSpeed; // Przesunięcie postaci w prawo
+						if (animationHandler.getWasUpdated(3)) {
+							animationHandler.play(3, sf::seconds(0.2)); // Rozpocznij odtwarzanie animacji
+						}
 					}
 					else if (event.key.code == sf::Keyboard::Up) {
-						player.move(0.f, -5.f);
-						moveCounter++;
+						upKeyPressed = true; // Ustaw flagę na true, gdy klawisz jest wciśnięty
+						characterY -= characterSpeed; // Przesunięcie postaci w górę
+						if (animationHandler.getWasUpdated(1)) {
+							animationHandler.play(1, sf::seconds(0.2)); // Rozpocznij odtwarzanie animacji
+						}
 					}
 					else if (event.key.code == sf::Keyboard::Down) {
-						player.move(0.f, 5.f);
-						moveCounter++;
+						downKeyPressed = true; // Ustaw flagę na true, gdy klawisz jest wciśnięty
+						characterY += characterSpeed; // Przesunięcie postaci w dół
+						if (animationHandler.getWasUpdated(0)) {
+							animationHandler.play(0, sf::seconds(0.2)); // Rozpocznij odtwarzanie animacji
+						}
+					}
+				}
+				else if (event.type == sf::Event::KeyReleased) {
+					leftKeyPressed = false;
+					rightKeyPressed = false;
+					upKeyPressed = false;
+					downKeyPressed = false;
+					// Zatrzymaj odtwarzanie animacji
+					animationHandler.stop(0);
+					animationHandler.stop(1);
+					animationHandler.stop(2);
+					animationHandler.stop(3);
+				}
+				// Sprawdzenie odległości od krawędzi
+				if (characterX < 75) {
+					// Zatrzymywanie postaci na lewej krawędzi
+					characterX = 75.0f;
+
+					// Przesuwanie tła w prawo
+					if (backgroundSprite.getPosition().x < 0) {
+						backgroundSprite.move(characterSpeed, 0);
+					}
+				}
+				else if (characterX > width - 150) {
+					// Zatrzymywanie postaci na prawej krawędzi
+					characterX = static_cast<float>(width - 150);
+
+					// zapisywanie bitmapy do pliku
+					//zapiszBitmape("nowa_bitmapa.png");
+					// Przesuwanie tła w lewo
+					if (backgroundSprite.getPosition().x + backgroundTexture.getSize().x > width) {
+						backgroundSprite.move(-characterSpeed, 0);
+					}
+				}
+				if (characterY < 75) {
+					// Zatrzymywanie postaci na górnej krawędzi
+					characterY = 75.0f;
+
+					// Przesuwanie tła w dół
+					if (backgroundSprite.getPosition().y < 0) {
+						backgroundSprite.move(0, characterSpeed);
+					}
+				}
+				else if (characterY > height - 150) {
+					// Zatrzymywanie postaci na dolnej krawędzi
+					characterY = static_cast<float>(height - 150);
+
+					// Przesuwanie tła w górę
+					if (backgroundSprite.getPosition().y + backgroundTexture.getSize().y > height) {
+						backgroundSprite.move(0, -characterSpeed);
+					}
+				}
+				// Sprawdzenie, czy żaden klawisz strzałki nie jest naciśnięty
+				if (!leftKeyPressed && !rightKeyPressed && !upKeyPressed && !downKeyPressed) {
+					if (animationHandler.getWasUpdated(0)) {
+						// Rozpocznij odtwarzanie animacji poruszania się w dół
+						animationHandler.play(0, sf::seconds(0.2));
+					}
+				}
+				// Pętla iterująca po wszystkich kierunkach
+				for (int i = 0; i < 4; ++i) {
+					// Sprawdzenie, czy dla danego kierunku (i) odpowiadający klawisz strzałki jest naciśnięty
+					if ((i == 0 && downKeyPressed) ||
+						(i == 1 && upKeyPressed) ||
+						(i == 2 && leftKeyPressed) ||
+						(i == 3 && rightKeyPressed)) {
+						// Zaktualizuj animację dla tego kierunku
+						animationHandler.update(i);
 					}
 				}
 				if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
@@ -282,22 +425,22 @@ void Engine::run() {
 					sf::Vector2f direction = sf::Vector2f(mousePosition) - sf::Vector2f(player.GameObject::getX(), player.GameObject::getY());
 					float length = std::sqrt(direction.x * direction.x + direction.y * direction.y);
 
-					// Normalizujemy wektor kierunku, aby uzyska� wektor jednostkowy
+					// Normalizujemy wektor kierunku, aby uzyskaďż˝ wektor jednostkowy
 					if (length != 0) {
 						direction /= length;
 					}
 
-					// Obliczamy punkt na obwodzie okr�gu, kt�ry b�dzie punktem pocz�tkowym przemieszczenia
+					// Obliczamy punkt na obwodzie okrďż˝gu, ktďż˝ry bďż˝dzie punktem poczďż˝tkowym przemieszczenia
 					Bullet startPoint(player.GameObject::getX(), player.GameObject::getY(), direction, 5.0f);
 
-					// Dop�ki punkt jest na ekranie, przesuwamy go w kierunku klikni�cia
+					// Dopďż˝ki punkt jest na ekranie, przesuwamy go w kierunku klikniďż˝cia
 					while (startPoint.getPoint().x >= 0 && startPoint.getPoint().x <= width && startPoint.getPoint().y >= 0 && startPoint.getPoint().y <= height) {
-						// Aktualizujemy po�o�enie punktu
+						// Aktualizujemy poďż˝oďż˝enie punktu
 						startPoint.update();
 
 
 
-						// Czy�cimy ekran do wylosowanego koloru
+						// Czyďż˝cimy ekran do wybranego koloru tla
 						window.clear(bgColor);
 						// Wylczenie synchronizacji pionowej
 						window.setVerticalSyncEnabled(true);
@@ -321,7 +464,7 @@ void Engine::run() {
 						startPoint.draw(window, sf::Color::Red);
 
 						// wczytywanie bitmapy z pliku
-						zaladujBitmape("bitmapa.png");
+						//zaladujBitmape("bitmapa.png");
 
 						// zapisywanie bitmapy do pliku
 						//zapiszBitmape("nowa_bitmapa.png");
@@ -330,9 +473,9 @@ void Engine::run() {
 						// skopiujBitmapyZSilnika(100, 100, 200, 200);
 
 						// rysowanie bitmapy na ekranie
-						bitmapa.rysujNaRenderWindow(window, 300, 300);
+							//bitmapa.rysujNaRenderWindow(window, 300, 300);
 
-						// Wy�wietlamy wszystkie elementy
+						// Wyďż˝wietlamy wszystkie elementy
 						window.display();
 					}
 				}
@@ -341,7 +484,7 @@ void Engine::run() {
 
 		// Czyszczenie ekranu do zadanego koloru (np. jasnoniebieski)
 		//window.clear(sf::Color(135, 206, 250));
-		// Czy�cimy ekran do wylosowanego koloru
+		// Czyďż˝cimy ekran do wylosowanego koloru
 		window.clear(bgColor);
 		// Wylczenie synchronizacji pionowej
 		window.setVerticalSyncEnabled(true);
@@ -361,9 +504,9 @@ void Engine::run() {
 			window.draw(playButTexture);
 		}
 		//window.draw(moveText);
-		//newLine.drawLine(50, 40, 400, 100,window, sf::Color::Red);
-		//newLine.drawBrokenLine(verticesPoint2d, window, sf::Color::Yellow, false);
-		//circle.drawCircle(400, 70, 50, window, sf::Color::Magenta);
+			//newLine.drawLine(50, 40, 400, 100,window, sf::Color::Red);
+			//newLine.drawBrokenLine(verticesPoint2d, window, sf::Color::Yellow, false);
+			//circle.drawCircle(400, 70, 50, window, sf::Color::Magenta);
 		rectangle.drawSimplePolygon(verticesPoint2d, window, sf::Color::Magenta);
 		//rectangle.drawPolygon(vertices, window, sf::Color::Red);
 		//elipse.drawElipse(400, 300, 100, 50, window, sf::Color::Yellow);
@@ -374,36 +517,43 @@ void Engine::run() {
 		ptk2.setPoint(150, 200);
 		ptk.draw(window, sf::Color::Cyan);
 		ptk2.draw(window, sf::Color::Blue);
-		
 
-		// wczytywanie bitmapy z pliku
-		zaladujBitmape("bitmapa.png");
-
-		// zapisywanie bitmapy do pliku
-		//zapiszBitmape("nowa_bitmapa.png");
-
-		// kopiowanie fragmentu bitmapy z silnika do samego siebie
-		// skopiujBitmapyZSilnika(100, 100, 200, 200);
-
-		// rysowanie bitmapy na ekranie
-		bitmapa.rysujNaRenderWindow(window, 300, 300);
-	
-
-		/* Nasz� scen� tworzymy wi�c na buforze, kt�rego zawarto�� jest automatycznie kopiowana na ekran w chwili wywo�ania metody display
+		/* Naszďż˝ scenďż˝ tworzymy wiďż˝c na buforze, ktďż˝rego zawartoďż˝ďż˝ jest automatycznie kopiowana na ekran w chwili wywoďż˝ania metody display
 		W SFML zarzadzanie technika wielokrotnego buforowania nastepuje automatycznie
 		*/
 		window.display();
 
 		//std::cout << "Czas trwania klatki: " << deltaTime.asSeconds() << " sekundy" << std::endl;
+
+		clearScreen(window);
+
+		// Rysuj tło
+		drawBackground();
+
+		// Sprawdzenie, czy żaden klawisz strzałki nie jest naciśnięty
+		if (!leftKeyPressed && !rightKeyPressed && !upKeyPressed && !downKeyPressed) {
+			// Rysuj klatkę animacji poruszania się w dół
+			animationHandler.draw(window, 0, characterX, characterY);
+		}
+
+		// Pętla iterująca po wszystkich kierunkach
+		for (int i = 0; i < 4; ++i) {
+			if ((i == 0 && downKeyPressed) ||
+				(i == 1 && upKeyPressed) ||
+				(i == 2 && leftKeyPressed) ||
+				(i == 3 && rightKeyPressed)) {
+				// Rysuj animację dla tego kierunku
+				animationHandler.draw(window, i, characterX, characterY);
+			}
+		}
 	}
 }
 
-
 int main()
 {
-    Engine& engine = Engine::getInstance(800, 600, false);
-    engine.setLimit(2);
-    engine.run();
+	Engine& engine = Engine::getInstance(800, 600, false);
+	engine.setLimit(30);
+	engine.run();
 
-    return 0;
+	return 0;
 }
