@@ -76,7 +76,7 @@ public:
 	 * @brief Rysowanie wielokata
 	 * @param vertices wektor wspolrzednych
 	 * @param window okno renderowania
-	 * @param color kolor elipsy
+	 * @param color kolor wielokata
 	 */
 	void drawPolygon(std::vector<sf::Vector2f>& vertices, sf::RenderWindow& window, sf::Color color);
 
@@ -118,13 +118,13 @@ public:
 	 * @brief Narysowanie wielokata wypelnionego kolorem, algorytm z kontrola parzystosci
 	 * @param vertices wektor wspolrzednych
 	 * @param window okno renderowania
-	 * @param color kolor elipsy
+	 * @param color kolor jakim wielokat ma byc wypelniony
 	 */
 	void filledPolygon(const std::vector<sf::Vector2f>& vertices, sf::RenderWindow& window, sf::Color fillColor);
 
 	/**
 	 * @brief Algorytm floodFill
-	 * @param vertices wektor wspolrzednych
+	 * @param startPoint wektor punktu od ktorego ma sie zaczac wypelnianie
 	 * @param window okno renderowania
 	 * @param fillColor kolor wypelnienia
 	 * @param backgroundColor kolor tla
@@ -133,7 +133,7 @@ public:
 
 	/**
 	 * @brief Algorytm borderFill
-	 * @param vertices wektor wspolrzednych
+	 * @param startPoint wektor punktu od ktorego ma sie zaczac wypelnianie
 	 * @param window okno renderowania
 	 * @param fillColor kolor wypelnienia
 	 * @param boundryColor kolor granicy figury 

@@ -11,7 +11,7 @@
 class LineSegment : public ShapeObject
 {
 private:
-	Point2D a, b; /**< punkty definiujace odcinek */
+	Point2D a, b; /**< obiekty typu Point2D reprezentujace odcinek */
 	int x0, y0, x1, y1; /**< wspolrzedne punktow definiujacych odcinek */
 
 public:
