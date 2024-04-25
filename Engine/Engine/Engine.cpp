@@ -483,10 +483,6 @@ void Engine::run() {
 			}
 		}
 
-		// Czyszczenie ekranu do zadanego koloru (np. jasnoniebieski)
-		//window.clear(sf::Color(135, 206, 250));
-		// Czyďż˝cimy ekran do wybranego koloru
-		//window.clear(bgColor);
 		// Wylczenie synchronizacji pionowej
 		window.setVerticalSyncEnabled(true);
 
@@ -504,14 +500,14 @@ void Engine::run() {
 			window.draw(playButton);
 			window.draw(playButTexture);
 		}
-		//window.draw(moveText);
-		//newLine.drawLine(50, 40, 400, 100,window, sf::Color::Red);
-		//newLine.drawBrokenLine(verticesPoint2d, window, sf::Color::Yellow, false);
-		//circle.drawCircle(400, 70, 50, window, sf::Color::Magenta);
+
+		newLine.drawLine(50, 40, 400, 100,window, sf::Color::Red);
+		newLine.drawBrokenLine(verticesPoint2d, window, sf::Color::Yellow, false);
+		circle.drawCircle(400, 70, 50, window, sf::Color::Magenta);
 		rectangle.drawSimplePolygon(verticesPoint2d, window, sf::Color::Magenta);
-		//rectangle.drawPolygon(vertices, window, sf::Color::Red);
-		//elipse.drawElipse(400, 300, 100, 50, window, sf::Color::Yellow);
-		//rectangle.filledPolygon(vertices, window, sf::Color::Green);
+		rectangle.drawPolygon(vertices, window, sf::Color::Red);
+		elipse.drawElipse(400, 300, 100, 50, window, sf::Color::Yellow);
+		rectangle.filledPolygon(vertices, window, sf::Color::Green);
 		player.drawPlayer(50, 30, window, sf::Color::Blue);
 
 		ptk.setPoint(100, 380);
