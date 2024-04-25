@@ -466,36 +466,12 @@ void Engine::run() {
 
 				//		// Rysujemy punkt
 				//		startPoint.draw(window, sf::Color::Red);
-
-				//		// wczytywanie bitmapy z pliku
-				//		//zaladujBitmape("bitmapa.png");
-
-				//		// zapisywanie bitmapy do pliku
-				//		//zapiszBitmape("nowa_bitmapa.png");
-
-				//		// kopiowanie fragmentu bitmapy z silnika do samego siebie
-				//		// skopiujBitmapyZSilnika(100, 100, 200, 200);
-
-				//		// rysowanie bitmapy na ekranie
-				//			//bitmapa.rysujNaRenderWindow(window, 300, 300);
-				//		// Rysuj tło
-				//		// Wyďż˝wietlamy wszystkie elementy
 				//		window.display();
 				//	}
 				//}
 				
 
 				//std::cout << "Czas trwania klatki: " << deltaTime.asSeconds() << " sekundy" << std::endl;
-
-				
-
-				
-				//window.display();
-				//clearScreen(window);
-
-				//// Rysuj tło
-				//drawBackground();
-				
 			}
 		}
 
