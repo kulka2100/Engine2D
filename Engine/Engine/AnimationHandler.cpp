@@ -4,7 +4,7 @@
 // Konstruktor domyœlny klasy AnimationHandler
 AnimationHandler::AnimationHandler() {}
 
-// Funkcja dodaj¹ca now¹ animacjê do obs³ugi
+// Metoda dodaj¹ca now¹ animacjê do obs³ugi
 void AnimationHandler::addAnimation(const std::vector<sf::Texture>& frames) {
     // Tworzenie nowego obiektu Animation
     Animation animation;
@@ -22,7 +22,7 @@ void AnimationHandler::addAnimation(const std::vector<sf::Texture>& frames) {
     animations.push_back(animation);
 }
 
-// Funkcja rozpoczynaj¹ca odtwarzanie animacji o podanym indeksie
+// Metoda rozpoczynaj¹ca odtwarzanie animacji o podanym indeksie
 void AnimationHandler::play(unsigned int animationIndex, sf::Time frameTime) {
     // Sprawdzenie, czy indeks animacji mieœci siê w zakresie wektora animacji
     if (animationIndex >= animations.size()) return;
@@ -38,7 +38,7 @@ void AnimationHandler::play(unsigned int animationIndex, sf::Time frameTime) {
     std::cout << "Rozpoczêto odtwarzanie animacji. Czas startu: " << animations[animationIndex].clock.getElapsedTime().asSeconds() << std::endl;
 }
 
-// Funkcja pauzuj¹ca odtwarzanie animacji o podanym indeksie
+// Metoda pauzuj¹ca odtwarzanie animacji o podanym indeksie
 void AnimationHandler::pause(unsigned int animationIndex) {
     // Sprawdzenie, czy indeks animacji mieœci siê w zakresie wektora animacji
     if (animationIndex >= animations.size()) return;
@@ -46,7 +46,7 @@ void AnimationHandler::pause(unsigned int animationIndex) {
     animations[animationIndex].isPlaying = false;
 }
 
-// Funkcja zatrzymuj¹ca odtwarzanie animacji o podanym indeksie
+// Metoda zatrzymuj¹ca odtwarzanie animacji o podanym indeksie
 void AnimationHandler::stop(unsigned int animationIndex) {
     // Sprawdzenie, czy indeks animacji mieœci siê w zakresie wektora animacji
     if (animationIndex >= animations.size()) return;
@@ -58,7 +58,7 @@ void AnimationHandler::stop(unsigned int animationIndex) {
     animations[animationIndex].wasUpdated = true;
 }
 
-// Funkcja aktualizuj¹ca stan animacji o podanym indeksie
+// Metoda aktualizuj¹ca stan animacji o podanym indeksie
 void AnimationHandler::update(unsigned int animationIndex) {
     // Sprawdzenie, czy indeks animacji mieœci siê w zakresie wektora animacji
     if (animationIndex >= animations.size()) {
@@ -102,7 +102,7 @@ void AnimationHandler::update(unsigned int animationIndex) {
     }
 }
 
-// Funkcja rysuj¹ca bie¿¹c¹ klatkê animacji o podanym indeksie
+// Metoda rysuj¹ca bie¿¹c¹ klatkê animacji o podanym indeksie
 void AnimationHandler::draw(sf::RenderWindow& window, unsigned int animationIndex, float x, float y) {
     // Sprawdzenie, czy indeks animacji mieœci siê w zakresie wektora animacji
     if (animationIndex >= animations.size()) return;
@@ -122,7 +122,7 @@ void AnimationHandler::draw(sf::RenderWindow& window, unsigned int animationInde
     //std::cout << "Rysowanie klatki animacji. Bie¿¹ca klatka: " << animation.currentFrame << "Ilosc wszytskich klatek:" << animation.frames.size() << std::endl;
 }
 
-// Funkcja zwracaj¹ca informacjê, czy animacja o podanym indeksie zosta³a zaktualizowana
+// Metoda zwracaj¹ca informacjê, czy animacja o podanym indeksie zosta³a zaktualizowana
 bool AnimationHandler::getWasUpdated(unsigned int animationIndex) {
     return animations[animationIndex].wasUpdated;
 }

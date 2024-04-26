@@ -25,7 +25,7 @@ private:
 
 public:
     /**
-     * @brief Konstruktor klasy AnimationHandler
+     * @brief Konstruktor domyslny klasy AnimationHandler
      */
     AnimationHandler();
 
@@ -38,38 +38,38 @@ public:
     }
 
     /**
-     * @brief Metoda dodajaca nowa animacje
+     * @brief Metoda dodajaca nowa animacje do obslugi
      * @param frames Wektor tekstur reprezentujacych klatki animacji
      */
     void addAnimation(const std::vector<sf::Texture>& frames);
 
     /**
-     * @brief Metoda rozpoczynajaca odtwarzanie animacji
+     * @brief Metoda rozpoczynajaca odtwarzanie animacji o podanym indeksie
      * @param animationIndex Indeks animacji do odtworzenia
      * @param frameTime Czas trwania jednej klatki animacji
      */
     void play(unsigned int animationIndex, sf::Time frameTime = sf::seconds(0.1));
 
     /**
-     * @brief Metoda pauzujaca odtwarzanie animacji
+     * @brief Metoda pauzujaca odtwarzanie animacji o podanym indeksie
      * @param animationIndex Indeks animacji do zatrzymania
      */
     void pause(unsigned int animationIndex);
 
     /**
-     * @brief Metoda zatrzymujaca odtwarzanie animacji
+     * @brief Metoda zatrzymujaca odtwarzanie animacji o podanym indeksie
      * @param animationIndex Indeks animacji do zatrzymania
      */
     void stop(unsigned int animationIndex);
 
     /**
-     * @brief Metoda aktualizujaca stan animacji
+     * @brief Metoda aktualizujaca stan animacji o podanym indeksie
      * @param animationIndex Indeks animacji do zaktualizowania
      */
     void update(unsigned int animationIndex);
 
     /**
-     * @brief Metoda rysujaca animacje na oknie renderowania
+     * @brief Metoda rysujaca bie¿aca klatke animacji o podanym indeksie
      * @param window Referencja do okna renderowania
      * @param animationIndex Indeks animacji do narysowania
      * @param x Wspolrzedna X pozycji animacji
@@ -78,7 +78,7 @@ public:
     void draw(sf::RenderWindow& window, unsigned int animationIndex, float x, float y);
 
     /**
-     * @brief Metoda zwracajaca informacje o aktualizacji animacji
+     * @brief Metoda zwracajaca informacje, czy animacja o podanym indeksie zostala zaktualizowana
      * @param animationIndex Indeks animacji
      * @return Wartosc logiczna wskazujaca, czy animacja zostala zaktualizowana
      */

@@ -4,19 +4,19 @@
 // Konstruktor domyœlny klasy BitmapHandler
 BitmapHandler::BitmapHandler() {}
 
-// Funkcja tworz¹ca nowy bitmapê o podanych wymiarach
+// Metoda tworz¹ca nowy bitmapê o podanych wymiarach
 void BitmapHandler::createBitmap(int width, int height) {
     // Zmiana rozmiaru bitmapy na podane wymiary, wype³nienie zerami
     bitmap.resize(height, std::vector<int>(width, 0));
 }
 
-// Funkcja usuwaj¹ca zawartoœæ bitmapy
+// Metoda usuwaj¹ca zawartoœæ bitmapy
 void BitmapHandler::deleteBitmap() {
     // Wyczyszczenie wektora bitmapy
     bitmap.clear();
 }
 
-// Funkcja wczytuj¹ca bitmapê z pliku o podanej nazwie
+// Metoda wczytuj¹ca bitmapê z pliku o podanej nazwie
 bool BitmapHandler::loadFromFile(const std::string& filename) {
     // Otwarcie pliku do odczytu
     std::ifstream file(filename);
@@ -49,7 +49,7 @@ bool BitmapHandler::loadFromFile(const std::string& filename) {
     return true;
 }
 
-// Funkcja zapisuj¹ca bitmapê do pliku o podanej nazwie
+// Metoda zapisuj¹ca bitmapê do pliku o podanej nazwie
 bool BitmapHandler::saveToFile(const std::string& filename) {
     // Otwarcie pliku do zapisu
     std::ofstream file(filename);
@@ -80,7 +80,7 @@ bool BitmapHandler::saveToFile(const std::string& filename) {
     return true;
 }
 
-// Funkcja kopiuj¹ca zawartoœæ bitmapy z innej bitmapy
+// Metoda kopiuj¹ca zawartoœæ bitmapy z innej bitmapy
 void BitmapHandler::copyFrom(const BitmapHandler& other) {
     // Przypisanie zawartoœci bitmapy z innej bitmapy
     bitmap = other.bitmap;
